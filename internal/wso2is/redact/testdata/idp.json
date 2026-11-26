@@ -1,0 +1,16 @@
+{
+  "id": "idp-1",
+  "name": "Google",
+  "federatedAuthenticators": {
+    "authenticators": [
+      {
+        "name": "GoogleOIDCAuthenticator",
+        "properties": [
+          {"key": "ClientId", "value": "google-client-id-abc"},
+          {"key": "ClientSecret", "value": "google-oauth-secret-xyz"},
+          {"name": "privateKey", "value": "saml-signing-key-pem"}
+        ]
+      }
+    ]
+  }
+}

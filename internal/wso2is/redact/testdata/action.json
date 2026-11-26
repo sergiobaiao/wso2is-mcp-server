@@ -1,0 +1,14 @@
+{
+  "id": "act-1",
+  "name": "pre-issue-token",
+  "endpoint": {
+    "uri": "https://ext.example.com/action",
+    "authentication": {
+      "type": "BEARER",
+      "properties": [
+        {"name": "accessToken", "value": "bearer-api-token-333"},
+        {"name": "passwd", "value": "basic-auth-passwd-444"}
+      ]
+    }
+  }
+}

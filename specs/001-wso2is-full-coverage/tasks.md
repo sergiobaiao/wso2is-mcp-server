@@ -35,16 +35,16 @@ its own.
 
 **Purpose**: Safety net for existing tools, toolchain, dependencies, vendored specs, CI.
 
-- [ ] T001 [P] Write `cmd/asgardeo-mcp/compat_test.go` (package `main`): build the server with `setupServer()`, send an in-process `tools/list` JSON-RPC request through `MCPServer.HandleMessage`, normalize each tool (name, description, input schema with sorted `required` and property names/types, annotations) and compare with `internal/tools/testdata/admin_tools.golden.json` (`-update` flag writes it); generate the golden for the 19 existing tools from the unchanged code
-- [ ] T002 [P] Write `cmd/self-service-mcp/compat_test.go` the same way for the 28 existing tools (`setupServer(client)` with a client built from a dummy `BASE_URL` and token), golden `internal/tools/testdata/enduser_tools.golden.json`
-- [ ] T003 [P] Add the WSO2 Apache 2.0 license header (copied from `cmd/self-service-mcp/main.go`, year 2025) to `internal/config/config.go`, `internal/asgardeo/client.go` and `internal/utils/utils.go`, the only tracked `.go` files without it
-- [ ] T004 Upgrade `go.mod` to `go 1.25.5` and `github.com/mark3labs/mcp-go` v1.6.0 (research.md R4); fix compile errors in `cmd/asgardeo-mcp/main.go`, `cmd/self-service-mcp/main.go`, `internal/tools/**/*.go` without changing tool names, inputs or outputs; `go build ./...` and the T001/T002 compat tests pass unchanged (if mcp-go serializes defaults differently, adjust only the normalizer, never the golden)
-- [ ] T005 Vendor the specs: copy the 81 root files and 35 org files from `wso2/docs-is` commit `832c86be91f9753ecc67054f5737a5f0e389f395` into `api-specs/wso2is/7.3.0/root/` and `api-specs/wso2is/7.3.0/org/`, and write `api-specs/wso2is/7.3.0/SOURCE` (repository, commit, both source paths) per research.md R1
-- [ ] T006 Create `scripts/sync-specs.sh` (args: commit, IS version; downloads both directories through `https://raw.githubusercontent.com/wso2/docs-is/<commit>/...` using the GitHub contents listing; rewrites `SOURCE`; fails on any download error)
-- [ ] T007 Create `api-specs/embed.go` (package `apispecs`, `//go:embed wso2is`, exported `FS embed.FS`)
-- [ ] T008 [P] Add `github.com/getkin/kin-openapi` v0.153.0 to `go.mod` (research.md R3) with `go get` and `go mod tidy`
-- [ ] T009 [P] Add `.golangci.yml` enabling the default linters plus `gosec`, `errorlint`, `revive` (research.md R16), and add the missing `lint` target (`golangci-lint run`) to `Makefile`
-- [ ] T010 [P] Create `.github/workflows/ci.yml` running on pull requests and pushes to `main`: `gofmt -s -l` (fail if output), `go vet ./...`, `golangci-lint run`, `go test -race ./...`
+- [X] T001 [P] Write `cmd/asgardeo-mcp/compat_test.go` (package `main`): build the server with `setupServer()`, send an in-process `tools/list` JSON-RPC request through `MCPServer.HandleMessage`, normalize each tool (name, description, input schema with sorted `required` and property names/types, annotations) and compare with `internal/tools/testdata/admin_tools.golden.json` (`-update` flag writes it); generate the golden for the 19 existing tools from the unchanged code
+- [X] T002 [P] Write `cmd/self-service-mcp/compat_test.go` the same way for the 28 existing tools (`setupServer(client)` with a client built from a dummy `BASE_URL` and token), golden `internal/tools/testdata/enduser_tools.golden.json`
+- [X] T003 [P] Add the WSO2 Apache 2.0 license header (copied from `cmd/self-service-mcp/main.go`, year 2025) to `internal/config/config.go`, `internal/asgardeo/client.go` and `internal/utils/utils.go`, the only tracked `.go` files without it
+- [X] T004 Upgrade `go.mod` to `go 1.25.5` and `github.com/mark3labs/mcp-go` v1.6.0 (research.md R4); fix compile errors in `cmd/asgardeo-mcp/main.go`, `cmd/self-service-mcp/main.go`, `internal/tools/**/*.go` without changing tool names, inputs or outputs; `go build ./...` and the T001/T002 compat tests pass unchanged (if mcp-go serializes defaults differently, adjust only the normalizer, never the golden)
+- [X] T005 Vendor the specs: copy the 81 root files and 35 org files from `wso2/docs-is` commit `832c86be91f9753ecc67054f5737a5f0e389f395` into `api-specs/wso2is/7.3.0/root/` and `api-specs/wso2is/7.3.0/org/`, and write `api-specs/wso2is/7.3.0/SOURCE` (repository, commit, both source paths) per research.md R1
+- [X] T006 Create `scripts/sync-specs.sh` (args: commit, IS version; downloads both directories through `https://raw.githubusercontent.com/wso2/docs-is/<commit>/...` using the GitHub contents listing; rewrites `SOURCE`; fails on any download error)
+- [X] T007 Create `api-specs/embed.go` (package `apispecs`, `//go:embed wso2is`, exported `FS embed.FS`)
+- [X] T008 [P] Add `github.com/getkin/kin-openapi` v0.153.0 to `go.mod` (research.md R3) with `go get` and `go mod tidy`
+- [X] T009 [P] Add `.golangci.yml` enabling the default linters plus `gosec`, `errorlint`, `revive` (research.md R16), and add the missing `lint` target (`golangci-lint run`) to `Makefile`
+- [X] T010 [P] Create `.github/workflows/ci.yml` running on pull requests and pushes to `main`: `gofmt -s -l` (fail if output), `go vet ./...`, `golangci-lint run`, `go test -race ./...`
 
 ---
 
@@ -55,57 +55,57 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Spike (validate research assumptions against a real IS 7.3)
 
-- [ ] T011 Create `test/integration/spike_test.go` (`//go:build integration`) with one test per assumption: (a) client_credentials `scope=SYSTEM` token works on `/api/server/v1/applications` (R7); (b) organization_switch from an M2M token for a shared app (R6); (c) DCR and OAuth2 scope endpoints work under `/t/carbon.super` (R14); (d) a JWT from an MCP Client app authorized for an MCP server has `aud` containing the MCP resource and is accepted by `/scim2/Users` (R5); (e) Login Flow AI endpoints respond or fail with a recognizable error (R17)
+- [X] T011 Create `test/integration/spike_test.go` (`//go:build integration`) with one test per assumption: (a) client_credentials `scope=SYSTEM` token works on `/api/server/v1/applications` (R7); (b) organization_switch from an M2M token for a shared app (R6); (c) DCR and OAuth2 scope endpoints work under `/t/carbon.super` (R14); (d) a JWT from an MCP Client app authorized for an MCP server has `aud` containing the MCP resource and is accepted by `/scim2/Users` (R5); (e) Login Flow AI endpoints respond or fail with a recognizable error (R17)
 - [ ] T012 Run T011 against `wso2/wso2is:7.3.0` and record each outcome (pass, or the fallback chosen) under a new "Spike results" section at the end of `specs/001-wso2is-full-coverage/research.md`; if (b) or (d) fails, update `contracts/` and this file before Phase 5 or 6 starts
 
 ### Configuration
 
-- [ ] T013 [P] Write `internal/config/config_test.go`: every variable in `contracts/configuration.md` (defaults, enums, `BASE_URL` parsing into `data-model.md` Config.ServerURL and Config.TenantDomain, conflict error, `ASGARDEO_*` fallbacks, `TOOLSETS` validation against areas, derived Config.Issuer and Config.JWKSURL), and that errors never contain secret values
-- [ ] T014 Implement `internal/config/config.go` per `contracts/configuration.md`, setting `data-model.md` Config.ServerURL, Config.TenantDomain, Config.AuthMode (enum), Config.Transport (enum), Config.Stateless, Config.Issuer, Config.JWKSURL, Config.Resource, Config.ReadOnly, Config.AllowFlowAPIs, Config.IncludeDeprecated, Config.Toolsets (validated against areas), Config.MaxResponseBytes, Config.SCIMProfileAttributes, Config.ISVersion (replace the current `Load()`; keep exported constants in `internal/config/constants.go`, adding new names)
+- [X] T013 [P] Write `internal/config/config_test.go`: every variable in `contracts/configuration.md` (defaults, enums, `BASE_URL` parsing into `data-model.md` Config.ServerURL and Config.TenantDomain, conflict error, `ASGARDEO_*` fallbacks, `TOOLSETS` validation against areas, derived Config.Issuer and Config.JWKSURL), and that errors never contain secret values
+- [X] T014 Implement `internal/config/config.go` per `contracts/configuration.md`, setting `data-model.md` Config.ServerURL, Config.TenantDomain, Config.AuthMode (enum), Config.Transport (enum), Config.Stateless, Config.Issuer, Config.JWKSURL, Config.Resource, Config.ReadOnly, Config.AllowFlowAPIs, Config.IncludeDeprecated, Config.Toolsets (validated against areas), Config.MaxResponseBytes, Config.SCIMProfileAttributes, Config.ISVersion (replace the current `Load()`; keep exported constants in `internal/config/constants.go`, adding new names)
 
 ### Fake IS for tests
 
-- [ ] T015 Create `internal/wso2is/istest/fakeis.go`: `httptest.NewTLSServer` with route registration by method and path, request recording, `/oauth2/token` (client_credentials, organization_switch), `/oauth2/jwks` backed by a generated RSA key, and a `SignJWT(claims)` helper; plus `internal/wso2is/istest/fakeis_test.go`
+- [X] T015 Create `internal/wso2is/istest/fakeis.go`: `httptest.NewTLSServer` with route registration by method and path, request recording, `/oauth2/token` (client_credentials, organization_switch), `/oauth2/jwks` backed by a generated RSA key, and a `SignJWT(claims)` helper; plus `internal/wso2is/istest/fakeis_test.go`
 
 ### Catalog
 
-- [ ] T016 [P] Write `internal/wso2is/catalog/normalize_test.go`: table tests for operationId derivation, sanitizing (`getUser by id` → `getUserById`), duplicate suffixing (`createSMSSender`), path-prefix extraction and the per-file prefix table (research.md R2), and the kind rules and overrides (research.md R9, `data-model.md` Operation.Kind)
-- [ ] T017 [P] Write `internal/wso2is/catalog/catalog_test.go`: load 7.3.0 and assert (1) all 116 files load; (2) every file maps to exactly one area (`data-model.md` SpecFile.Area); (3) `data-model.md` Operation.ID is unique and matches `<area>.<operationId>` or `<area>.org.<operationId>`; (4) every operation has a kind, a path starting with its SpecFile.PathPrefix, and sorted unique scopes (`data-model.md` Operation.Scopes); (5) flow and deprecated flags follow research.md R10 and R11; (6) the stats equal `testdata/stats.golden.json` (`-update` flag rewrites it)
-- [ ] T018 Implement `internal/wso2is/catalog/load.go`: `Load(fsys fs.FS, version string)` walks the given FS (production passes `apispecs.FS`) for the version, loads each file with kin-openapi, converts Swagger 2.0 files with `openapi2conv` (research.md R2) and sets `data-model.md` SpecFile.Family (from the directory), SpecFile.Name and SpecFile.Doc
-- [ ] T019 Implement `internal/wso2is/catalog/areas.go` with the area table from `data-model.md` (Area table), which sets `data-model.md` SpecFile.Area (exactly one per file), the per-file prefix overrides that set `data-model.md` SpecFile.PathPrefix (research.md R2), and `data-model.md` SpecFile.Deprecated and SpecFile.Flow (research.md R10, R11)
-- [ ] T020 Implement `internal/wso2is/catalog/normalize.go`: `data-model.md` Operation.OperationID rules (research.md R2), Operation.Method (upper case), deduplication by family+method+full path, `data-model.md` Operation.Scopes (regex extraction, sorted, unique), `data-model.md` Operation.Summary (max 200 chars) and Operation.Description cleanup, parameter and body extraction (`data-model.md` Param.In, Param.Required, BodySpec.ContentType), `data-model.md` Operation.Kind (research.md R9), `data-model.md` Operation.Flow (research.md R10, including the `pi-info` exception), `data-model.md` Operation.Deprecated (research.md R11), Operation.Source
-- [ ] T021 Implement `internal/wso2is/catalog/catalog.go`: `Catalog` (`data-model.md` Catalog.Version, Catalog.Source, Catalog.Operations sorted by ID), `data-model.md` Operation.ID (`<area>.<operationId>` or `<area>.org.<operationId>`, uniqueness enforced at load), `Get`, `Areas`, `Stats`, `Availability(op, cfg)` (`data-model.md` Operation derived `Availability()`)
-- [ ] T022 Implement `internal/wso2is/catalog/extra.go` with the three Login Flow AI operations (research.md R17, flagged `data-model.md` Operation.AIFeature) and generate `internal/wso2is/catalog/testdata/stats.golden.json`; T016 and T017 pass
-- [ ] T023 [P] Add `internal/wso2is/catalog/bench_test.go` benchmarking full load (target under 1.5 s, plan.md Performance Goals)
-- [ ] T024 [P] Write `internal/wso2is/catalog/version_test.go` with a synthetic version in `internal/wso2is/catalog/testdata/versions/9.9.9/{root,org}/` (two minimal files whose names exist in the area table, plus `SOURCE`): `Load(os.DirFS(...), "9.9.9")` succeeds, operations get areas, kinds and ids, and a second test builds per-operation tool definitions for it through the same catalog API with no code change (SC-008); assert an unknown `IS_VERSION` fails startup with the list of available versions
+- [X] T016 [P] Write `internal/wso2is/catalog/normalize_test.go`: table tests for operationId derivation, sanitizing (`getUser by id` → `getUserById`), duplicate suffixing (`createSMSSender`), path-prefix extraction and the per-file prefix table (research.md R2), and the kind rules and overrides (research.md R9, `data-model.md` Operation.Kind)
+- [X] T017 [P] Write `internal/wso2is/catalog/catalog_test.go`: load 7.3.0 and assert (1) all 116 files load; (2) every file maps to exactly one area (`data-model.md` SpecFile.Area); (3) `data-model.md` Operation.ID is unique and matches `<area>.<operationId>` or `<area>.org.<operationId>`; (4) every operation has a kind, a path starting with its SpecFile.PathPrefix, and sorted unique scopes (`data-model.md` Operation.Scopes); (5) flow and deprecated flags follow research.md R10 and R11; (6) the stats equal `testdata/stats.golden.json` (`-update` flag rewrites it)
+- [X] T018 Implement `internal/wso2is/catalog/load.go`: `Load(fsys fs.FS, version string)` walks the given FS (production passes `apispecs.FS`) for the version, loads each file with kin-openapi, converts Swagger 2.0 files with `openapi2conv` (research.md R2) and sets `data-model.md` SpecFile.Family (from the directory), SpecFile.Name and SpecFile.Doc
+- [X] T019 Implement `internal/wso2is/catalog/areas.go` with the area table from `data-model.md` (Area table), which sets `data-model.md` SpecFile.Area (exactly one per file), the per-file prefix overrides that set `data-model.md` SpecFile.PathPrefix (research.md R2), and `data-model.md` SpecFile.Deprecated and SpecFile.Flow (research.md R10, R11)
+- [X] T020 Implement `internal/wso2is/catalog/normalize.go`: `data-model.md` Operation.OperationID rules (research.md R2), Operation.Method (upper case), deduplication by family+method+full path, `data-model.md` Operation.Scopes (regex extraction, sorted, unique), `data-model.md` Operation.Summary (max 200 chars) and Operation.Description cleanup, parameter and body extraction (`data-model.md` Param.In, Param.Required, BodySpec.ContentType), `data-model.md` Operation.Kind (research.md R9), `data-model.md` Operation.Flow (research.md R10, including the `pi-info` exception), `data-model.md` Operation.Deprecated (research.md R11), Operation.Source
+- [X] T021 Implement `internal/wso2is/catalog/catalog.go`: `Catalog` (`data-model.md` Catalog.Version, Catalog.Source, Catalog.Operations sorted by ID), `data-model.md` Operation.ID (`<area>.<operationId>` or `<area>.org.<operationId>`, uniqueness enforced at load), `Get`, `Areas`, `Stats`, `Availability(op, cfg)` (`data-model.md` Operation derived `Availability()`)
+- [X] T022 Implement `internal/wso2is/catalog/extra.go` with the three Login Flow AI operations (research.md R17, flagged `data-model.md` Operation.AIFeature) and generate `internal/wso2is/catalog/testdata/stats.golden.json`; T016 and T017 pass
+- [X] T023 [P] Add `internal/wso2is/catalog/bench_test.go` benchmarking full load (target under 1.5 s, plan.md Performance Goals)
+- [X] T024 [P] Write `internal/wso2is/catalog/version_test.go` with a synthetic version in `internal/wso2is/catalog/testdata/versions/9.9.9/{root,org}/` (two minimal files whose names exist in the area table, plus `SOURCE`): `Load(os.DirFS(...), "9.9.9")` succeeds, operations get areas, kinds and ids, and a second test builds per-operation tool definitions for it through the same catalog API with no code change (SC-008); assert an unknown `IS_VERSION` fails startup with the list of available versions
 
 ### Redaction
 
-- [ ] T025 [P] Write `internal/wso2is/redact/redact_test.go` with fixtures in `internal/wso2is/redact/testdata/` for application, IdP, user store, notification sender, webhook, action, keystore, agent creation and TOTP responses (research.md R12); assert zero secret values remain and that `[REDACTED]` marks each removed value
-- [ ] T026 Implement `internal/wso2is/redact/redact.go` (keys, substrings, property arrays) per research.md R12, superseding `redact()` in `internal/tools/enduser/enduser.go`
+- [X] T025 [P] Write `internal/wso2is/redact/redact_test.go` with fixtures in `internal/wso2is/redact/testdata/` for application, IdP, user store, notification sender, webhook, action, keystore, agent creation and TOTP responses (research.md R12); assert zero secret values remain and that `[REDACTED]` marks each removed value
+- [X] T026 Implement `internal/wso2is/redact/redact.go` (keys, substrings, property arrays) per research.md R12, superseding `redact()` in `internal/tools/enduser/enduser.go`
 
 ### IS client
 
-- [ ] T027 [P] Write `internal/wso2is/client/client_test.go` against `istest`: client_credentials token fetch and caching (R7), static token, bearer from context (`data-model.md` CredentialContext.Mode, CredentialContext.BearerToken), tenant URL building (R14), `CERT_PATH` trust, SCIM content type, query/path parameter encoding, and that no log output contains tokens
-- [ ] T028 [P] Write `internal/wso2is/client/validate_test.go`: request validation with openapi3filter for missing path params, wrong types, unknown query params, invalid bodies; the error lists field names (FR-005)
-- [ ] T029 [P] Write `internal/wso2is/client/errors_test.go`: messages per `contracts/tool-conventions.md` (Results), including required scopes on 403 (FR-028)
-- [ ] T030 [P] Write `internal/wso2is/client/truncate_test.go`: cutting at the last complete element of a top-level array and of SCIM `Resources`, with `truncated`, `returned`, `total` and paging hints (research.md R15)
-- [ ] T031 Implement `internal/wso2is/client/client.go` (`Do(ctx, op, PathParams, Query, Body) (any, error)`), `internal/wso2is/client/auth.go` (three modes selected by `data-model.md` CredentialContext.Mode, token cache with 30 s margin) and `internal/wso2is/client/context.go` (`data-model.md` CredentialContext.Mode, CredentialContext.BearerToken, CredentialContext.Subject, CredentialContext.OrganizationID; headers listed under `data-model.md` Param are never taken from agent input)
-- [ ] T032 Implement `internal/wso2is/client/validate.go`, `internal/wso2is/client/errors.go` and `internal/wso2is/client/truncate.go` so T028–T030 pass
+- [X] T027 [P] Write `internal/wso2is/client/client_test.go` against `istest`: client_credentials token fetch and caching (R7), static token, bearer from context (`data-model.md` CredentialContext.Mode, CredentialContext.BearerToken), tenant URL building (R14), `CERT_PATH` trust, SCIM content type, query/path parameter encoding, and that no log output contains tokens
+- [X] T028 [P] Write `internal/wso2is/client/validate_test.go`: request validation with openapi3filter for missing path params, wrong types, unknown query params, invalid bodies; the error lists field names (FR-005)
+- [X] T029 [P] Write `internal/wso2is/client/errors_test.go`: messages per `contracts/tool-conventions.md` (Results), including required scopes on 403 (FR-028)
+- [X] T030 [P] Write `internal/wso2is/client/truncate_test.go`: cutting at the last complete element of a top-level array and of SCIM `Resources`, with `truncated`, `returned`, `total` and paging hints (research.md R15)
+- [X] T031 Implement `internal/wso2is/client/client.go` (`Do(ctx, op, PathParams, Query, Body) (any, error)`), `internal/wso2is/client/auth.go` (three modes selected by `data-model.md` CredentialContext.Mode, token cache with 30 s margin) and `internal/wso2is/client/context.go` (`data-model.md` CredentialContext.Mode, CredentialContext.BearerToken, CredentialContext.Subject, CredentialContext.OrganizationID; headers listed under `data-model.md` Param are never taken from agent input)
+- [X] T032 Implement `internal/wso2is/client/validate.go`, `internal/wso2is/client/errors.go` and `internal/wso2is/client/truncate.go` so T028–T030 pass
 
 ### Tool toolkit
 
-- [ ] T033 [P] Write `internal/tools/toolkit/toolkit_test.go`: annotations per kind, confirmation sentence appended to write and destructive descriptions, results passed through redact and truncate, `"Done."` for empty bodies, error rendering, name validation (`data-model.md` Tool.Name), registry rejecting duplicate names, `READ_ONLY` filtering (FR-018) and a tool counter for budget tests
-- [ ] T034 [P] Write `internal/tools/toolkit/elicit_test.go` using an in-process mcp-go client with and without the elicitation capability: accept proceeds; decline, cancel, `approve=false` and timeout return "Not approved by the user. Nothing was changed." with zero requests to `istest` (FR-017a, SC-009)
-- [ ] T035 Implement `internal/tools/toolkit/tool.go` (builder for `data-model.md` Tool: Name, Layer, Kind, Scopes, OrgCapable, Description, Handler) and `internal/tools/toolkit/registry.go`
-- [ ] T036 Implement `internal/tools/toolkit/elicit.go` (summary message and boolean `approve` schema per `contracts/tool-conventions.md` Approval; 120 s timeout)
-- [ ] T037 [P] Add `internal/tools/toolkit/bench_test.go` benchmarking one read and one write tool call end to end against `istest` with zero-latency routes; per-call server overhead under 50 ms (plan.md Performance Goals)
+- [X] T033 [P] Write `internal/tools/toolkit/toolkit_test.go`: annotations per kind, confirmation sentence appended to write and destructive descriptions, results passed through redact and truncate, `"Done."` for empty bodies, error rendering, name validation (`data-model.md` Tool.Name), registry rejecting duplicate names, `READ_ONLY` filtering (FR-018) and a tool counter for budget tests
+- [X] T034 [P] Write `internal/tools/toolkit/elicit_test.go` using an in-process mcp-go client with and without the elicitation capability: accept proceeds; decline, cancel, `approve=false` and timeout return "Not approved by the user. Nothing was changed." with zero requests to `istest` (FR-017a, SC-009)
+- [X] T035 Implement `internal/tools/toolkit/tool.go` (builder for `data-model.md` Tool: Name, Layer, Kind, Scopes, OrgCapable, Description, Handler) and `internal/tools/toolkit/registry.go`
+- [X] T036 Implement `internal/tools/toolkit/elicit.go` (summary message and boolean `approve` schema per `contracts/tool-conventions.md` Approval; 120 s timeout)
+- [X] T037 [P] Add `internal/tools/toolkit/bench_test.go` benchmarking one read and one write tool call end to end against `istest` with zero-latency routes; per-call server overhead under 50 ms (plan.md Performance Goals)
 
 ### Transport and binary
 
-- [ ] T038 [P] Write `internal/transport/transport_test.go`: stdio serve, HTTP `/mcp` and `/healthz`, stateful default, `MCP_STATELESS`, `ReadHeaderTimeout`, graceful shutdown (`contracts/http-transport.md`, Server behavior)
-- [ ] T039 Implement `internal/transport/transport.go` by moving `serveHTTP` and `requireAuthorization` out of `cmd/self-service-mcp/main.go`; `requireAuthorization` stays as the legacy no-validation middleware for self-service without `MCP_RESOURCE`
-- [ ] T040 Create `cmd/wso2is-mcp/main.go` (config, catalog, client, toolkit registry, transport; instructions text warning that tool data is untrusted) and move the existing tool registration and `cmd/asgardeo-mcp/compat_test.go` (T001) from `cmd/asgardeo-mcp/` to `cmd/wso2is-mcp/`; delete `cmd/asgardeo-mcp/`; update `Makefile` (`SERVER ?= wso2is-mcp self-service-mcp`, `BINARY_NAME`), `.gitignore`, `.github/workflows/release.yml` (server option `wso2is-mcp`) and `.github/scripts/release.sh` (tag prefix `wso2is-mcp-v`, package `wso2is_mcp_server`, legacy `asgardeo-mcp-v` and `v` tags read for the current version)
+- [X] T038 [P] Write `internal/transport/transport_test.go`: stdio serve, HTTP `/mcp` and `/healthz`, stateful default, `MCP_STATELESS`, `ReadHeaderTimeout`, graceful shutdown (`contracts/http-transport.md`, Server behavior)
+- [X] T039 Implement `internal/transport/transport.go` by moving `serveHTTP` and `requireAuthorization` out of `cmd/self-service-mcp/main.go`; `requireAuthorization` stays as the legacy no-validation middleware for self-service without `MCP_RESOURCE`
+- [X] T040 Create `cmd/wso2is-mcp/main.go` (config, catalog, client, toolkit registry, transport; instructions text warning that tool data is untrusted) and move the existing tool registration and `cmd/asgardeo-mcp/compat_test.go` (T001) from `cmd/asgardeo-mcp/` to `cmd/wso2is-mcp/`; delete `cmd/asgardeo-mcp/`; update `Makefile` (`SERVER ?= wso2is-mcp self-service-mcp`, `BINARY_NAME`), `.gitignore`, `.github/workflows/release.yml` (server option `wso2is-mcp`) and `.github/scripts/release.sh` (tag prefix `wso2is-mcp-v`, package `wso2is_mcp_server`, legacy `asgardeo-mcp-v` and `v` tags read for the current version)
 
 **Checkpoint**: `go test -race ./...` passes; `wso2is-mcp` starts and serves the existing 19 tools.
 
@@ -119,18 +119,18 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Tests for User Story 1
 
-- [ ] T041 [P] [US1] Write `internal/tools/catalog/search_test.go`: ranking, filters `area`, `kind`, `organization`, `limit` bounds, output shape per `contracts/catalog-tools.md`
-- [ ] T042 [P] [US1] Write `internal/tools/catalog/describe_test.go`: fields per `contracts/catalog-tools.md`, body schema depth limit 4, `call_with`, `example`, availability text for flow and deprecated operations
-- [ ] T043 [P] [US1] Write `internal/tools/catalog/call_test.go`: read tool refuses non-read kinds; write tool refuses read kinds; refusals per `contracts/tool-conventions.md` (flow, deprecated, organization mismatch); validation failures send no request; write calls go through elicitation
-- [ ] T044 [US1] Write `internal/tools/catalog/coverage_test.go`: for every catalog operation, build a minimal valid input from its schema, call through the matching tool against `istest`, and assert method and path reached the fake IS, or the expected refusal for flow and deprecated operations (FR-006, SC-001)
+- [X] T041 [P] [US1] Write `internal/tools/catalog/search_test.go`: ranking, filters `area`, `kind`, `organization`, `limit` bounds, output shape per `contracts/catalog-tools.md`
+- [X] T042 [P] [US1] Write `internal/tools/catalog/describe_test.go`: fields per `contracts/catalog-tools.md`, body schema depth limit 4, `call_with`, `example`, availability text for flow and deprecated operations
+- [X] T043 [P] [US1] Write `internal/tools/catalog/call_test.go`: read tool refuses non-read kinds; write tool refuses read kinds; refusals per `contracts/tool-conventions.md` (flow, deprecated, organization mismatch); validation failures send no request; write calls go through elicitation
+- [X] T044 [US1] Write `internal/tools/catalog/coverage_test.go`: for every catalog operation, build a minimal valid input from its schema, call through the matching tool against `istest`, and assert method and path reached the fake IS, or the expected refusal for flow and deprecated operations (FR-006, SC-001)
 
-- [ ] T045 [P] [US1] Write `internal/tools/catalog/search_eval_test.go` with `internal/tools/catalog/testdata/search_eval.json`: 30 administrator task phrases across at least 10 areas, each with the expected operation id and two queries (first and refined); pass when the expected id is in the top 10 results of the first or second query for at least 27 of 30 entries (SC-007)
-- [ ] T046 [P] [US1] Add `internal/wso2is/catalog/search_bench_test.go`: search over the full 7.3.0 catalog under 20 ms (plan.md Performance Goals)
+- [X] T045 [P] [US1] Write `internal/tools/catalog/search_eval_test.go` with `internal/tools/catalog/testdata/search_eval.json`: 30 administrator task phrases across at least 10 areas, each with the expected operation id and two queries (first and refined); pass when the expected id is in the top 10 results of the first or second query for at least 27 of 30 entries (SC-007)
+- [X] T046 [P] [US1] Add `internal/wso2is/catalog/search_bench_test.go`: search over the full 7.3.0 catalog under 20 ms (plan.md Performance Goals)
 
 ### Implementation for User Story 1
 
-- [ ] T047 [US1] Implement `internal/wso2is/catalog/search.go` (token match over `data-model.md` Operation.ID, Operation.Summary, Operation.Path, Operation.Area; research.md R8)
-- [ ] T048 [US1] Implement `internal/tools/catalog/tools.go` with `search_operations`, `describe_operation`, `call_read_operation`, `call_write_operation` per `contracts/catalog-tools.md` using `toolkit` and `client`
+- [X] T047 [US1] Implement `internal/wso2is/catalog/search.go` (token match over `data-model.md` Operation.ID, Operation.Summary, Operation.Path, Operation.Area; research.md R8)
+- [X] T048 [US1] Implement `internal/tools/catalog/tools.go` with `search_operations`, `describe_operation`, `call_read_operation`, `call_write_operation` per `contracts/catalog-tools.md` using `toolkit` and `client`
 - [ ] T049 [US1] Register the catalog tools in `cmd/wso2is-mcp/main.go` (`call_write_operation` omitted when `READ_ONLY=true`)
 - [ ] T050 [US1] Add `test/integration/catalog_test.go` (`//go:build integration`): quickstart.md §2 steps
 
@@ -146,19 +146,19 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Tests for User Story 2
 
-- [ ] T051 [P] [US2] Write `internal/tools/scim/users_test.go`: `list_users`, `search_users`, `get_user`, `create_user` (both input spellings, conflict error, password never echoed), `update_user_attribute`, `update_user_profile` (`SCIM_PROFILE_ATTRIBUTES`, legacy names), `delete_user`, `patch_user`; request bodies and `error`/`errorStatus` outputs per `contracts/scim-tools.md`
-- [ ] T052 [P] [US2] Write `internal/tools/scim/groups_test.go`: `list_groups`, `create_group`, `add_user_to_group` (user lookup then PATCH), `remove_user_from_group`, `delete_group`, `get_group`, `update_group`
-- [ ] T053 [P] [US2] Write `internal/tools/scim/roles_test.go`: `list_roles`, `create_role`, `assign_role_to_user`, `remove_role_from_user` (PATCH `/v2/Roles/{id}` with paths `users`), `delete_role`, `get_role`, `assign_role_to_group`, `remove_role_from_group`, `update_role_permissions`
-- [ ] T054 [P] [US2] Write `internal/tools/scim/agents_bulk_test.go`: `list_agents`, `create_agent` (credentials redacted), `delete_agent`, `get_agent`, `bulk_create_users` (array 1–100, legacy `user1*`/`user2*`, per-user results)
-- [ ] T055 [P] [US2] Write `internal/tools/scim/readonly_test.go`: with `READ_ONLY=true` only the read SCIM tools are registered (US2 scenario 5)
+- [X] T051 [P] [US2] Write `internal/tools/scim/users_test.go`: `list_users`, `search_users`, `get_user`, `create_user` (both input spellings, conflict error, password never echoed), `update_user_attribute`, `update_user_profile` (`SCIM_PROFILE_ATTRIBUTES`, legacy names), `delete_user`, `patch_user`; request bodies and `error`/`errorStatus` outputs per `contracts/scim-tools.md`
+- [X] T052 [P] [US2] Write `internal/tools/scim/groups_test.go`: `list_groups`, `create_group`, `add_user_to_group` (user lookup then PATCH), `remove_user_from_group`, `delete_group`, `get_group`, `update_group`
+- [X] T053 [P] [US2] Write `internal/tools/scim/roles_test.go`: `list_roles`, `create_role`, `assign_role_to_user`, `remove_role_from_user` (PATCH `/v2/Roles/{id}` with paths `users`), `delete_role`, `get_role`, `assign_role_to_group`, `remove_role_from_group`, `update_role_permissions`
+- [X] T054 [P] [US2] Write `internal/tools/scim/agents_bulk_test.go`: `list_agents`, `create_agent` (credentials redacted), `delete_agent`, `get_agent`, `bulk_create_users` (array 1–100, legacy `user1*`/`user2*`, per-user results)
+- [X] T055 [P] [US2] Write `internal/tools/scim/readonly_test.go`: with `READ_ONLY=true` only the read SCIM tools are registered (US2 scenario 5)
 
 ### Implementation for User Story 2
 
-- [ ] T056 [US2] Implement `internal/tools/scim/common.go`: compact attribute list, SCIM error mapping to `error`/`errorStatus`, catalog operation lookups by id (fail at startup if missing)
+- [X] T056 [US2] Implement `internal/tools/scim/common.go`: compact attribute list, SCIM error mapping to `error`/`errorStatus`, catalog operation lookups by id (fail at startup if missing)
 - [ ] T057 [P] [US2] Implement `internal/tools/scim/users.go` (replaces `internal/tools/users.go`; delete it)
-- [ ] T058 [P] [US2] Implement `internal/tools/scim/groups.go`
-- [ ] T059 [P] [US2] Implement `internal/tools/scim/roles.go`
-- [ ] T060 [P] [US2] Implement `internal/tools/scim/agents.go` and `internal/tools/scim/bulk.go`
+- [X] T058 [P] [US2] Implement `internal/tools/scim/groups.go`
+- [X] T059 [P] [US2] Implement `internal/tools/scim/roles.go`
+- [X] T060 [P] [US2] Implement `internal/tools/scim/agents.go` and `internal/tools/scim/bulk.go`
 - [ ] T061 [US2] Register SCIM tools in `cmd/wso2is-mcp/main.go`; descriptions copied from the Arazzo `summary` text adapted to MCP errors
 - [ ] T062 [US2] Add `test/integration/scim_test.go` (`//go:build integration`): quickstart.md §3 sequence
 
@@ -175,7 +175,7 @@ transport, new admin binary. No user story starts before this phase is complete.
 ### Tests for User Story 3
 
 - [ ] T063 [P] [US3] Write `internal/wso2is/client/orgswitch_test.go`: organization_switch request fields (research.md R6), cache key per `data-model.md` OrgTokenCache entry (Key, ExpiresAt), refresh before expiry, refusal message on IS rejection, HTTP mode without `CLIENT_ID` returns a configuration error, `/t/<tenant>/o/` path building
-- [ ] T064 [P] [US3] Write `internal/tools/scim/org_test.go`: SCIM tools with `organization_id` call `/o/scim2/...`; agent tools reject `organization_id`
+- [X] T064 [P] [US3] Write `internal/tools/scim/org_test.go`: SCIM tools with `organization_id` call `/o/scim2/...`; agent tools reject `organization_id`
 
 ### Implementation for User Story 3
 
@@ -195,14 +195,14 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Tests for User Story 4
 
-- [ ] T068 [P] [US4] Write `internal/transport/jwt_test.go` with `istest` JWKS: missing token, non-JWT, bad signature, wrong `iss`, wrong `aud`, expired, not yet valid, skew, unknown `kid` refresh rate limit; `WWW-Authenticate` values per `contracts/http-transport.md`; zero IS calls on rejection (SC-006); reasons never include the token
-- [ ] T069 [P] [US4] Write `internal/transport/metadata_test.go`: both well-known paths, fields per `contracts/http-transport.md`, `scopes_supported` equals the union of registered tool scopes
+- [X] T068 [P] [US4] Write `internal/transport/jwt_test.go` with `istest` JWKS: missing token, non-JWT, bad signature, wrong `iss`, wrong `aud`, expired, not yet valid, skew, unknown `kid` refresh rate limit; `WWW-Authenticate` values per `contracts/http-transport.md`; zero IS calls on rejection (SC-006); reasons never include the token
+- [X] T069 [P] [US4] Write `internal/transport/metadata_test.go`: both well-known paths, fields per `contracts/http-transport.md`, `scopes_supported` equals the union of registered tool scopes
 - [ ] T070 [P] [US4] Write `cmd/wso2is-mcp/main_test.go`: HTTP mode requires `MCP_RESOURCE`; a valid token reaches a tool and `istest` sees the same bearer (`data-model.md` CredentialContext.BearerToken); `CredentialContext.Subject` appears in the access log and the token does not
 
 ### Implementation for User Story 4
 
-- [ ] T071 [US4] Add `github.com/lestrrat-go/jwx/v3` v3.4.0 (research.md R5) and implement `internal/transport/jwt.go` (JWKS cache, validation, context injection)
-- [ ] T072 [US4] Implement `internal/transport/metadata.go` (RFC 9728) and wire both into `internal/transport/transport.go`
+- [X] T071 [US4] Add `github.com/lestrrat-go/jwx/v3` v3.4.0 (research.md R5) and implement `internal/transport/jwt.go` (JWKS cache, validation, context injection)
+- [X] T072 [US4] Implement `internal/transport/metadata.go` (RFC 9728) and wire both into `internal/transport/transport.go`
 - [ ] T073 [US4] Enable HTTP mode in `cmd/wso2is-mcp/main.go`; in `cmd/self-service-mcp/main.go` use JWT validation when `MCP_RESOURCE` is set, else keep legacy behavior with a startup warning (FR-026)
 - [ ] T074 [US4] Add `test/integration/http_test.go` (`//go:build integration`): quickstart.md §5 curl checks and a tool call with an MCP Client app token
 
@@ -291,8 +291,8 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 **Independent Test**: call a flow operation with the setting off and on.
 
-- [ ] T102 [P] [US8] Write `internal/tools/catalog/flow_test.go`: with the flag off, describe marks flow operations disabled with the reason and how to enable; calls are refused with zero requests; with the flag on, calls go through `call_write_operation` with elicitation; covers all 51 unique operations classified `flow` and asserts the 2 unique `pi-info` operations are not flow (research.md R10)
-- [ ] T103 [US8] Make `internal/wso2is/catalog/catalog.go` Availability and `internal/tools/catalog/tools.go` honor `data-model.md` Config.AllowFlowAPIs; T102 passes
+- [X] T102 [P] [US8] Write `internal/tools/catalog/flow_test.go`: with the flag off, describe marks flow operations disabled with the reason and how to enable; calls are refused with zero requests; with the flag on, calls go through `call_write_operation` with elicitation; covers all 51 unique operations classified `flow` and asserts the 2 unique `pi-info` operations are not flow (research.md R10)
+- [X] T103 [US8] Make `internal/wso2is/catalog/catalog.go` Availability and `internal/tools/catalog/tools.go` honor `data-model.md` Config.AllowFlowAPIs; T102 passes
 
 **Checkpoint**: all user stories complete.
 
