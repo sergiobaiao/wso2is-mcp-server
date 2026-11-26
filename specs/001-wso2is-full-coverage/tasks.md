@@ -131,8 +131,8 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 - [X] T047 [US1] Implement `internal/wso2is/catalog/search.go` (token match over `data-model.md` Operation.ID, Operation.Summary, Operation.Path, Operation.Area; research.md R8)
 - [X] T048 [US1] Implement `internal/tools/catalog/tools.go` with `search_operations`, `describe_operation`, `call_read_operation`, `call_write_operation` per `contracts/catalog-tools.md` using `toolkit` and `client`
-- [ ] T049 [US1] Register the catalog tools in `cmd/wso2is-mcp/main.go` (`call_write_operation` omitted when `READ_ONLY=true`)
-- [ ] T050 [US1] Add `test/integration/catalog_test.go` (`//go:build integration`): quickstart.md §2 steps
+- [X] T049 [US1] Register the catalog tools in `cmd/wso2is-mcp/main.go` (`call_write_operation` omitted when `READ_ONLY=true`)
+- [X] T050 [US1] Add `test/integration/catalog_test.go` (`//go:build integration`): quickstart.md §2 steps
 
 **Checkpoint**: US1 complete; every operation is reachable or refused with a reason.
 
@@ -155,12 +155,12 @@ transport, new admin binary. No user story starts before this phase is complete.
 ### Implementation for User Story 2
 
 - [X] T056 [US2] Implement `internal/tools/scim/common.go`: compact attribute list, SCIM error mapping to `error`/`errorStatus`, catalog operation lookups by id (fail at startup if missing)
-- [ ] T057 [P] [US2] Implement `internal/tools/scim/users.go` (replaces `internal/tools/users.go`; delete it)
+- [X] T057 [P] [US2] Implement `internal/tools/scim/users.go` (replaces `internal/tools/users.go`; delete it)
 - [X] T058 [P] [US2] Implement `internal/tools/scim/groups.go`
 - [X] T059 [P] [US2] Implement `internal/tools/scim/roles.go`
 - [X] T060 [P] [US2] Implement `internal/tools/scim/agents.go` and `internal/tools/scim/bulk.go`
-- [ ] T061 [US2] Register SCIM tools in `cmd/wso2is-mcp/main.go`; descriptions copied from the Arazzo `summary` text adapted to MCP errors
-- [ ] T062 [US2] Add `test/integration/scim_test.go` (`//go:build integration`): quickstart.md §3 sequence
+- [X] T061 [US2] Register SCIM tools in `cmd/wso2is-mcp/main.go`; descriptions copied from the Arazzo `summary` text adapted to MCP errors
+- [X] T062 [US2] Add `test/integration/scim_test.go` (`//go:build integration`): quickstart.md §3 sequence
 
 **Checkpoint**: US1 and US2 work independently.
 

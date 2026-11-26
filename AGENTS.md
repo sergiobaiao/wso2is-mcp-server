@@ -17,8 +17,8 @@ Server (IS) 7.3**:
 The target is full coverage of the IS 7.3 REST APIs: 116 OpenAPI files and 921 operations,
 including SCIM 2.0. The work has no dependency on the WSO2 AI Gateway.
 
-**Status**: the design is complete and implementation has not started. All work is driven by
-Spec Kit.
+**Status**: implementation is in progress. `specs/001-wso2is-full-coverage/tasks.md` is the
+progress record: tasks marked `[X]` are done. All work is driven by Spec Kit.
 
 ## 2. Sources of truth and precedence
 
@@ -67,6 +67,10 @@ Rules:
 - **Do not start implementation while analyze reports CRITICAL issues.**
 - **Mark each task `[X]`** in `tasks.md` when it is done. A task is done only when its tests and
   `go build ./...`, `go vet ./...` and `go test -race ./...` pass.
+- **Document every change.** A code change is not done until the related markdown files
+  (`docs/`, `README.md`, this file) and the Spec Kit artifacts (`tasks.md`, and `plan.md`,
+  `research.md`, `data-model.md`, `contracts/` or `quickstart.md` when behavior, configuration
+  or a decision changes) describe it. Update them in the same commit.
 - **Commit** after each task or logical group, with the task id in the message
   (`T048: add catalog tools`). Never commit secrets or IS credentials.
 - After the last task, run converge until it reports `Converged`.
@@ -116,6 +120,12 @@ make fmt                                         # gofmt -w -s
 make lint                                        # golangci-lint (target added by T009)
 make build-linux SERVER=self-service-mcp BUILD_VERSION=1.2.3
 ```
+
+- `-race` needs cgo and a C compiler. On Windows without one, run `go test ./...` locally and
+  rely on CI (`.github/workflows/ci.yml`, Linux) for the `-race` gate; say so when reporting.
+- Integration tests skip unless their environment is set: the tool-level tests
+  (`catalog_test.go`, `scim_test.go`) need `SERVER_URL`, `CLIENT_ID`, `CLIENT_SECRET` and
+  `CERT_PATH`; the spike tests need `IS_URL`, `IS_CLIENT_ID`, `IS_CLIENT_SECRET` and `CERT_PATH`.
 
 - A local IS for integration tests: `docker run -d -p 9443:9443 wso2/wso2is:7.3.0`. The setup is
   in `specs/001-wso2is-full-coverage/quickstart.md`.
