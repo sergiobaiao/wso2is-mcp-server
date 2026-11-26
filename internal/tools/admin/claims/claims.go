@@ -47,18 +47,8 @@ func Tools(cat *catalog.Catalog, cl *client.Client, _ *config.Config) ([]toolkit
 			Scopes: list.Scopes(), OrgCapable: true, Operation: list.Root,
 			Description: "List all local claims (user attributes) in WSO2 Identity Server, hidden claims excluded.",
 			Handler: func(ctx context.Context, _ map[string]any) (any, error) {
-				op, err := list.Select(ctx)
-				if err != nil {
-					return nil, err
-				}
 				// The organization variant has no exclude-hidden-claims parameter.
-				var q map[string]any
-				for _, p := range op.Params {
-					if p.Name == "exclude-hidden-claims" {
-						q = map[string]any{p.Name: true}
-					}
-				}
-				return cl.Do(ctx, op, nil, q, nil)
+				return toolkit.CallDeclared(ctx, cl, list, nil, map[string]any{"exclude-hidden-claims": true}, nil)
 			},
 		},
 		{

@@ -225,9 +225,9 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Implementation for User Story 5
 
-- [ ] T079 [US5] Migrate `internal/tools/applications.go` to `internal/tools/admin/applications/applications.go` on `toolkit` and `client` (catalog ids for application operations, `catalog/extra.go` for Login Flow AI); outputs use `SERVER_URL` and `TENANT_DOMAIN`; delete the old file
+- [X] T079 [US5] Migrate `internal/tools/applications.go` to `internal/tools/admin/applications/applications.go` on `toolkit` and `client` (catalog ids for application operations, `catalog/extra.go` for Login Flow AI); outputs use `SERVER_URL` and `TENANT_DOMAIN`; delete the old file
 - [X] T080 [US5] Migrate `internal/tools/api_resources.go` to `internal/tools/admin/apiauth/apiauth.go` and `internal/tools/claims.go` to `internal/tools/admin/claims/claims.go`; delete the old files
-- [ ] T081 [P] [US5] Add `delete_application` and `share_application` in `internal/tools/admin/applications/applications.go`
+- [X] T081 [P] [US5] Add `delete_application` and `share_application` in `internal/tools/admin/applications/applications.go`
 - [X] T082 [P] [US5] Add the 5 api_authorization tools in `internal/tools/admin/apiauth/apiauth.go`
 - [X] T083 [P] [US5] Implement the 5 identity_providers tools (templates `google`, `github`, `facebook`, `microsoft`, `apple`, `oidc`, `saml`) in `internal/tools/admin/idp/idp.go`
 - [X] T084 [P] [US5] Implement the 4 governance_security tools in `internal/tools/admin/governance/governance.go`

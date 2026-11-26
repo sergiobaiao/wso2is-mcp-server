@@ -25,6 +25,7 @@ import (
 
 	"github.com/asgardeo/mcp/internal/config"
 	"github.com/asgardeo/mcp/internal/tools/admin/apiauth"
+	"github.com/asgardeo/mcp/internal/tools/admin/applications"
 	"github.com/asgardeo/mcp/internal/tools/admin/claims"
 	"github.com/asgardeo/mcp/internal/tools/admin/governance"
 	"github.com/asgardeo/mcp/internal/tools/admin/idp"
@@ -43,6 +44,7 @@ var areas = []struct {
 	name  string
 	tools areaTools
 }{
+	{"applications", applications.Tools},
 	{"api_authorization", apiauth.Tools},
 	{"claims", claims.Tools},
 	{"identity_providers", idp.Tools},

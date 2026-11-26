@@ -26,7 +26,7 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `delete_application` | destructive | `applications.deleteApplication` |
-| `share_application` | write | `applications.shareOrgApplication` (share with all or listed orgs) |
+| `share_application` | write | `applications.shareOrgApplication` (share with all or listed orgs; root organization only) |
 
 ### api_authorization (5)
 
@@ -127,6 +127,17 @@ exposes only for the root organization. The migrated read tools `list_api_resour
 `search_api_resources_by_name` and `get_api_resource_by_identifier` use
 `api_authorization.getAPIResources` with a `filter`; `list_claims` uses `claims.getLocalClaims`
 (`exclude-hidden-claims=true` on the root variant, which is the only one that declares it).
+
+The migrated application tools use `applications.getAllApplications`, `createApplication`,
+`getApplication`, `patchApplication`, `getInboundOAuthConfiguration`,
+`updateInboundOAuthConfiguration`, `addAuthorizedAPI` and `getAuthorizedAPIs` (all with
+organization variants). After a create, the new application is read back by name. The
+`get_application_by_*` scope list adds OIDC scopes through
+`api_authorization.getApiServerV1OidcScopes` and `claims.getExternalClaims` (OIDC dialect), in the
+root organization only. `update_login_flow` (root only) sends the local authenticators
+(`identity_providers.getAuthenticators`), the identity providers (`getIDPs`) and the visible local
+claims to `applications.generateLoginFlow`, polls `getLoginFlowStatus` every 2 s for up to
+3 minutes, and patches the application with the `getLoginFlowResult` sequence.
 
 Operation ids in this file are expected names. The implementation task for each area first
 runs `search_operations` logic over the catalog to fix the exact ids and records them in the

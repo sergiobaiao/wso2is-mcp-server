@@ -104,6 +104,27 @@ func UnionScopes(ops ...*catalog.Operation) []string {
 	return out
 }
 
+// KeepDeclared returns the entries of q that op declares as query parameters. Organization
+// variants often lack optional parameters of their root twin.
+func KeepDeclared(op *catalog.Operation, q map[string]any) map[string]any {
+	out := map[string]any{}
+	for _, p := range op.Params {
+		if v, ok := q[p.Name]; ok && p.In == "query" {
+			out[p.Name] = v
+		}
+	}
+	return out
+}
+
+// CallDeclared is Call with q reduced to the query parameters the selected operation declares.
+func CallDeclared(ctx context.Context, cl *client.Client, p OpPair, path map[string]string, q map[string]any, body any) (any, error) {
+	op, err := p.Select(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return cl.Do(ctx, op, path, KeepDeclared(op, q), body)
+}
+
 // Call selects the operation for ctx and sends it through cl.
 func Call(ctx context.Context, cl *client.Client, p OpPair, path map[string]string, query map[string]any, body any) (any, error) {
 	op, err := p.Select(ctx)

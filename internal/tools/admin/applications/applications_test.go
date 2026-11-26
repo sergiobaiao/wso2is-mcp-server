@@ -623,6 +623,23 @@ func TestUpdateLoginFlow(t *testing.T) {
 	env := setupTestEnv(t)
 
 	var statusCalls atomic.Int32
+	// Context the tool sends to the login flow AI: authenticators, IdPs and user claims.
+	env.srv.HandleJSON(http.MethodGet, "/api/server/v1/authenticators", http.StatusOK, []any{
+		map[string]any{"id": "QmFzaWNBdXRoZW50aWNhdG9y", "name": "BasicAuthenticator", "type": "LOCAL", "description": "Username and password"},
+		map[string]any{"id": "dG90cA", "name": "totp", "type": "LOCAL", "description": "TOTP"},
+	})
+	env.srv.HandleJSON(http.MethodGet, "/api/server/v1/identity-providers", http.StatusOK, map[string]any{
+		"identityProviders": []any{map[string]any{
+			"name": "Google",
+			"federatedAuthenticators": map[string]any{
+				"defaultAuthenticatorId": "R29vZ2xlT0lEQ0F1dGhlbnRpY2F0b3I",
+				"authenticators":         []any{map[string]any{"authenticatorId": "R29vZ2xlT0lEQ0F1dGhlbnRpY2F0b3I", "name": "GoogleOIDCAuthenticator"}},
+			},
+		}},
+	})
+	env.srv.HandleJSON(http.MethodGet, "/api/server/v1/claim-dialects/local/claims", http.StatusOK, []any{
+		map[string]any{"claimURI": "http://wso2.org/claims/emailaddress", "description": "Email address"},
+	})
 	env.srv.HandleJSON(http.MethodPost, "/api/server/v1/applications/loginflow/generate", http.StatusOK, map[string]any{
 		"operation_id": "op-flow-1",
 	})

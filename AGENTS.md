@@ -135,17 +135,21 @@ make build-linux SERVER=self-service-mcp BUILD_VERSION=1.2.3
 
 ## 6. Architecture
 
-### Current code (before implementation)
+### Current code (implementation in progress)
 
-- `cmd/asgardeo-mcp`: 19 admin tools registered by hand with `s.AddTool`, over stdio. Each
-  `internal/tools/*.go` constructor takes a singleton SDK client from `internal/asgardeo`.
-- `cmd/self-service-mcp`: 28 end-user tools, over stdio or stateless Streamable HTTP. The bearer
-  token from each request is put in the context (`internal/selfservice`). Tools are built with
-  `newTool` in `internal/tools/enduser/enduser.go`, which handles annotations, the confirmation
-  sentence and `redact()`.
-- Both use `github.com/asgardeo/go` v0.0.18. Its client credentials request `scope=SYSTEM`.
-- Configuration is in `internal/config` (`BASE_URL`, `CLIENT_ID`, `CLIENT_SECRET`, `CERT_PATH`,
-  `PRODUCT_MODE` and `ASGARDEO_*` fallbacks).
+- `cmd/wso2is-mcp` builds one `toolkit.Registry` from the catalog (`internal/wso2is/catalog`),
+  the IS client (`internal/wso2is/client`) and config, and registers three groups: catalog tools
+  (`internal/tools/catalog`), curated SCIM tools (`internal/tools/scim`) and curated admin
+  tools (`internal/tools/admin`, one package per area, listed in `internal/tools/admin/register.go`).
+  It no longer uses the Asgardeo SDK.
+- Curated tools resolve their operations with `toolkit.LookupPair` (root and `.org.` variant),
+  call IS with `toolkit.Call` / `toolkit.CallDeclared`, and read inputs with the `toolkit`
+  argument helpers. The toolkit adds annotations, the confirmation sentence, elicitation,
+  `organization_id`, redaction and truncation.
+- `cmd/self-service-mcp`: 28 end-user tools on the legacy `newTool` framework in
+  `internal/tools/enduser` and `internal/selfservice`, until US7 (T096–T101) migrates them.
+- Configuration is in `internal/config` (`contracts/configuration.md`, with the legacy
+  `BASE_URL` and `ASGARDEO_*` fallbacks).
 
 ### Target (plan.md, Project Structure)
 
