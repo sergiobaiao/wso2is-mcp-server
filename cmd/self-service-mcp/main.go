@@ -74,7 +74,7 @@ func main() {
 			log.Fatalf("Configuration error: missing required environment variable ACCESS_TOKEN")
 		}
 	default:
-		log.Fatalf("Configuration error: TRANSPORT must be stdio or http, got %q", transportMode)
+		log.Fatalf("Configuration error: TRANSPORT must be stdio or http, got %q", transportMode) //nolint:gosec // G706: value comes from the operator environment and is quoted
 	}
 
 	client, err := selfservice.NewClient(token)
@@ -92,10 +92,10 @@ func main() {
 		if raw := os.Getenv(config.MCP_STATELESS_PARAM); raw != "" {
 			stateless, err = strconv.ParseBool(raw)
 			if err != nil {
-				log.Fatalf("Configuration error: invalid %s=%q: %v", config.MCP_STATELESS_PARAM, raw, err)
+				log.Fatalf("Configuration error: invalid %s=%q: %v", config.MCP_STATELESS_PARAM, raw, err) //nolint:gosec // G706: value comes from the operator environment and is quoted
 			}
 		}
-		log.Printf("Self Service MCP listening on :%s/mcp", port)
+		log.Printf("Self Service MCP listening on :%q/mcp", port) //nolint:gosec // G706: value comes from the operator environment and is quoted
 		err = transport.Serve(s, transportMode, transport.HTTPOptions{
 			Port:       port,
 			Stateless:  stateless,

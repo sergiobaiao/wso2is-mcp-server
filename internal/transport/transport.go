@@ -125,7 +125,8 @@ func serveListener(ctx context.Context, srv *http.Server, ln net.Listener) error
 	go func() {
 		select {
 		case <-ctx.Done():
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownGraceDelay)
+			// ctx is already cancelled here; shut down with its values but a fresh deadline.
+			shutdownCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), shutdownGraceDelay)
 			defer cancel()
 			shutdownErr <- srv.Shutdown(shutdownCtx)
 		case <-done:

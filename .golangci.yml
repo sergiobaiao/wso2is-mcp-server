@@ -16,3 +16,9 @@ linters:
       - path: _test\.go
         linters:
           - gosec
+      # Upstream ALL_CAPS constant names are kept so asgardeo-mcp-server changes cherry-pick
+      # cleanly (constitution Principle I).
+      - path: internal/config/constants\.go
+        linters:
+          - revive
+        text: var-naming

@@ -174,7 +174,7 @@ var fileToArea = map[string]string{
 }
 
 // prefixOverrides corrects specs with missing, malformed, or misleading servers entries (research.md R2).
-var prefixOverrides = map[string]string{
+var prefixOverrides = map[string]string{ //nolint:gosec // G101: API path prefixes, not credentials
 	"root/scim2-schemas":                 "/scim2",
 	"root/authentication-api":            "/oauth2",
 	"root/admin-identity-verification":   "/api/users/v1",

@@ -53,7 +53,7 @@ var templates = map[string]template{
 	"facebook": {authenticator: "FacebookAuthenticator", inputs: oauthClient},
 	"microsoft": {
 		authenticator: "OpenIDConnectAuthenticator", inputs: oauthClient,
-		fixed: map[string]string{
+		fixed: map[string]string{ //nolint:gosec // G101: public Microsoft endpoint URLs, not credentials
 			"OAuth2AuthzEPUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
 			"OAuth2TokenEPUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
 			"Scopes":           "openid email profile",

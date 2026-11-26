@@ -234,6 +234,13 @@ the check that catches it. Read this section before the first task of a session.
 9. **Generated files not ignored.** `.specify/scripts/python/__pycache__/` was left untracked.
    Add generated output to `.gitignore` instead of leaving it in `git status`.
 
+10. **A CI gate that never ran.** `.github/workflows/ci.yml` pinned golangci-lint v2.1.6,
+    built with go1.24, which cannot load a module that targets go 1.25.5. The lint step failed on
+    config load, so the race tests after it never ran and 28 real lint issues went unseen. Pin a
+    linter release built with at least the `go.mod` Go version, and run `make lint` (or
+    `golangci-lint run ./...`) locally before marking T009/T010-style tasks done. Each `//nolint`
+    needs the rule id and a reason.
+
 Also check these before trusting a vendored spec: some request body schemas reject every
 valid body (research.md R2). Confirm a validation error against the spec before changing the
 request.

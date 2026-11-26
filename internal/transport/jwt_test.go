@@ -96,7 +96,7 @@ func TestJWTMiddleware_MissingOrNonBearer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewJWTValidator: %v", err)
 	}
-	defer v.Close()
+	defer func() { _ = v.Close() }()
 
 	var nextCalled atomic.Bool
 	handler := v.Middleware(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -158,7 +158,7 @@ func TestJWTMiddleware_InvalidTokens(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewJWTValidator: %v", err)
 	}
-	defer v.Close()
+	defer func() { _ = v.Close() }()
 
 	otherKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -269,7 +269,7 @@ func TestJWTMiddleware_ValidTokenSkewContextAndAccessLog(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewJWTValidator with CERT_PATH: %v", err)
 	}
-	defer v.Close()
+	defer func() { _ = v.Close() }()
 
 	// Exp 30s in past, nbf 30s in future — both within 60s skew.
 	tok := is.SignJWT(map[string]any{
@@ -337,7 +337,7 @@ func TestJWTMiddleware_UnknownKidRefreshRateLimit(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewJWTValidator: %v", err)
 	}
-	defer v.Close()
+	defer func() { _ = v.Close() }()
 
 	handler := v.Middleware(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)

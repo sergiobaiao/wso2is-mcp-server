@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -81,7 +82,7 @@ func TestHealthz(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GET /healthz: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", resp.StatusCode)
@@ -101,7 +102,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		defer srv.Close()
 
 		initResp := postMCP(t, srv.Client(), srv.URL+"/mcp", nil, initReqBody)
-		defer initResp.Body.Close()
+		defer func() { _ = initResp.Body.Close() }()
 		if initResp.StatusCode != http.StatusOK {
 			b, _ := io.ReadAll(initResp.Body)
 			t.Fatalf("initialize status=%d body=%s", initResp.StatusCode, b)
@@ -115,7 +116,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		listResp := postMCP(t, srv.Client(), srv.URL+"/mcp", map[string]string{
 			server.HeaderKeySessionID: sessionID,
 		}, listToolsReqBody)
-		defer listResp.Body.Close()
+		defer func() { _ = listResp.Body.Close() }()
 		if listResp.StatusCode != http.StatusOK {
 			b, _ := io.ReadAll(listResp.Body)
 			t.Fatalf("tools/list with session status=%d body=%s", listResp.StatusCode, b)
@@ -123,7 +124,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 
 		// Subsequent call without session ID is rejected.
 		noSessResp := postMCP(t, srv.Client(), srv.URL+"/mcp", nil, listToolsReqBody)
-		defer noSessResp.Body.Close()
+		defer func() { _ = noSessResp.Body.Close() }()
 		if noSessResp.StatusCode != http.StatusNotFound {
 			t.Fatalf("expected 404 without session id, got %d", noSessResp.StatusCode)
 		}
@@ -138,7 +139,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		if err != nil {
 			t.Fatalf("DELETE /mcp: %v", err)
 		}
-		delResp.Body.Close()
+		_ = delResp.Body.Close()
 		if delResp.StatusCode != http.StatusOK {
 			t.Fatalf("DELETE /mcp status=%d", delResp.StatusCode)
 		}
@@ -146,7 +147,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		afterDelResp := postMCP(t, srv.Client(), srv.URL+"/mcp", map[string]string{
 			server.HeaderKeySessionID: sessionID,
 		}, listToolsReqBody)
-		defer afterDelResp.Body.Close()
+		defer func() { _ = afterDelResp.Body.Close() }()
 		if afterDelResp.StatusCode != http.StatusNotFound {
 			t.Fatalf("expected 404 after DELETE, got %d", afterDelResp.StatusCode)
 		}
@@ -159,7 +160,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		defer srv.Close()
 
 		initResp := postMCP(t, srv.Client(), srv.URL+"/mcp", nil, initReqBody)
-		defer initResp.Body.Close()
+		defer func() { _ = initResp.Body.Close() }()
 		if initResp.StatusCode != http.StatusOK {
 			b, _ := io.ReadAll(initResp.Body)
 			t.Fatalf("initialize status=%d body=%s", initResp.StatusCode, b)
@@ -169,7 +170,7 @@ func TestMCPStatefulDefaultAndStateless(t *testing.T) {
 		}
 
 		listResp := postMCP(t, srv.Client(), srv.URL+"/mcp", nil, listToolsReqBody)
-		defer listResp.Body.Close()
+		defer func() { _ = listResp.Body.Close() }()
 		if listResp.StatusCode != http.StatusOK {
 			b, _ := io.ReadAll(listResp.Body)
 			t.Fatalf("tools/list without session in stateless mode status=%d body=%s", listResp.StatusCode, b)
@@ -239,7 +240,7 @@ func TestAuthorizationForwardedToContext(t *testing.T) {
 
 	// Unauthenticated request is rejected before reaching MCP server.
 	unauth := postMCP(t, srv.Client(), srv.URL+"/mcp", nil, listToolsReqBody)
-	unauth.Body.Close()
+	_ = unauth.Body.Close()
 	if unauth.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("expected 401 without token, got %d", unauth.StatusCode)
 	}
@@ -249,7 +250,7 @@ func TestAuthorizationForwardedToContext(t *testing.T) {
 	resp := postMCP(t, srv.Client(), srv.URL+"/mcp", map[string]string{
 		"Authorization": "Bearer forwarded-token-xyz",
 	}, callReq)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		b, _ := io.ReadAll(resp.Body)
 		t.Fatalf("tools/call status=%d body=%s", resp.StatusCode, b)
@@ -279,7 +280,7 @@ func TestExtraRoutes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GET extra route: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("expected 200, got %d", resp.StatusCode)
 	}
@@ -376,7 +377,7 @@ func TestServeStdioStreams(t *testing.T) {
 
 	select {
 	case err := <-errCh:
-		if err != nil && err != context.Canceled {
+		if err != nil && !errors.Is(err, context.Canceled) {
 			t.Fatalf("ServeStdioStreams returned unexpected error: %v", err)
 		}
 	case <-time.After(3 * time.Second):

@@ -37,7 +37,7 @@ const (
 
 // ErrNotApproved indicates that an elicitation approval request was declined,
 // cancelled, rejected, timed out, or failed.
-var ErrNotApproved = errors.New(NotApprovedMessage)
+var ErrNotApproved = errors.New(NotApprovedMessage) //nolint:staticcheck // ST1005: exact user-facing text from contracts/tool-conventions.md
 
 // RequestApproval asks the connected MCP client to confirm a tool call via form
 // elicitation. When the session or client does not support elicitation, it

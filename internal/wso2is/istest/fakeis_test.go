@@ -43,7 +43,7 @@ func TestFakeISRoutesAndRecording(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GET failed: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status = %d, want 200", resp.StatusCode)
@@ -65,7 +65,7 @@ func TestFakeISTokenEndpoints(t *testing.T) {
 	if err != nil {
 		t.Fatalf("token POST failed: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("client_credentials status = %d", resp.StatusCode)
 	}
@@ -84,7 +84,7 @@ func TestFakeISTokenEndpoints(t *testing.T) {
 	if err != nil {
 		t.Fatalf("org switch POST failed: %v", err)
 	}
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	if resp2.StatusCode != http.StatusOK {
 		t.Fatalf("organization_switch status = %d", resp2.StatusCode)
 	}
@@ -94,7 +94,7 @@ func TestFakeISTokenEndpoints(t *testing.T) {
 	if err != nil {
 		t.Fatalf("denied org switch POST failed: %v", err)
 	}
-	defer resp3.Body.Close()
+	defer func() { _ = resp3.Body.Close() }()
 	if resp3.StatusCode != http.StatusForbidden {
 		t.Fatalf("denied org switch status = %d, want 403", resp3.StatusCode)
 	}
@@ -107,7 +107,7 @@ func TestFakeISJWKSAndSignJWT(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GET jwks failed: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, _ := io.ReadAll(resp.Body)
 	var jwks struct {
 		Keys []map[string]any `json:"keys"`
