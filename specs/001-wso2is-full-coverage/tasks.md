@@ -226,18 +226,18 @@ transport, new admin binary. No user story starts before this phase is complete.
 ### Implementation for User Story 5
 
 - [ ] T079 [US5] Migrate `internal/tools/applications.go` to `internal/tools/admin/applications/applications.go` on `toolkit` and `client` (catalog ids for application operations, `catalog/extra.go` for Login Flow AI); outputs use `SERVER_URL` and `TENANT_DOMAIN`; delete the old file
-- [ ] T080 [US5] Migrate `internal/tools/api_resources.go` to `internal/tools/admin/apiauth/apiauth.go` and `internal/tools/claims.go` to `internal/tools/admin/claims/claims.go`; delete the old files
+- [X] T080 [US5] Migrate `internal/tools/api_resources.go` to `internal/tools/admin/apiauth/apiauth.go` and `internal/tools/claims.go` to `internal/tools/admin/claims/claims.go`; delete the old files
 - [ ] T081 [P] [US5] Add `delete_application` and `share_application` in `internal/tools/admin/applications/applications.go`
-- [ ] T082 [P] [US5] Add the 5 api_authorization tools in `internal/tools/admin/apiauth/apiauth.go`
-- [ ] T083 [P] [US5] Implement the 5 identity_providers tools (templates `google`, `github`, `facebook`, `microsoft`, `apple`, `oidc`, `saml`) in `internal/tools/admin/idp/idp.go`
-- [ ] T084 [P] [US5] Implement the 4 governance_security tools in `internal/tools/admin/governance/governance.go`
-- [ ] T085 [P] [US5] Implement the 4 user_stores tools in `internal/tools/admin/userstores/userstores.go`
-- [ ] T086 [P] [US5] Implement the 2 session tools in `internal/tools/admin/sessions/sessions.go`
+- [X] T082 [P] [US5] Add the 5 api_authorization tools in `internal/tools/admin/apiauth/apiauth.go`
+- [X] T083 [P] [US5] Implement the 5 identity_providers tools (templates `google`, `github`, `facebook`, `microsoft`, `apple`, `oidc`, `saml`) in `internal/tools/admin/idp/idp.go`
+- [X] T084 [P] [US5] Implement the 4 governance_security tools in `internal/tools/admin/governance/governance.go`
+- [X] T085 [P] [US5] Implement the 4 user_stores tools in `internal/tools/admin/userstores/userstores.go`
+- [X] T086 [P] [US5] Implement the 2 session tools in `internal/tools/admin/sessions/sessions.go`
 - [ ] T087 [P] [US5] Implement the 5 organizations tools in `internal/tools/admin/organizations/organizations.go`
 - [ ] T088 [P] [US5] Implement the 5 branding_notifications tools in `internal/tools/admin/branding/branding.go`
 - [ ] T089 [P] [US5] Implement the 6 extensions tools in `internal/tools/admin/extensions/extensions.go`
 - [ ] T090 [P] [US5] Implement the 4 workflows_approvals tools in `internal/tools/admin/workflows/workflows.go`
-- [ ] T091 [P] [US5] Add `create_local_claim` in `internal/tools/admin/claims/claims.go`
+- [X] T091 [P] [US5] Add `create_local_claim` in `internal/tools/admin/claims/claims.go`
 - [ ] T092 [US5] Create `internal/tools/admin/register.go` (registers all admin areas) and call it from `cmd/wso2is-mcp/main.go`; T075–T078 pass
 - [ ] T093 [US5] Add `test/integration/admin_test.go` (`//go:build integration`) covering SC-004: `create_single_page_app`; `create_api_resource` with two scopes, `create_role`, `update_role_permissions` with those scopes and `assign_role_to_user`; `create_user` then `add_user_to_group`; and `list_users` with `organization_id` of a sub-organization
 

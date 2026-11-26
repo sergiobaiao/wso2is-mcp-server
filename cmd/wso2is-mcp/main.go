@@ -25,6 +25,7 @@ import (
 	apispecs "github.com/asgardeo/mcp/api-specs"
 	"github.com/asgardeo/mcp/internal/config"
 	"github.com/asgardeo/mcp/internal/tools"
+	"github.com/asgardeo/mcp/internal/tools/admin"
 	catalogtools "github.com/asgardeo/mcp/internal/tools/catalog"
 	"github.com/asgardeo/mcp/internal/tools/scim"
 	"github.com/asgardeo/mcp/internal/tools/toolkit"
@@ -71,12 +72,15 @@ func setupServer(cfg *config.Config, cat *catalog.Catalog, cl *client.Client) (*
 	if err := scim.Register(reg, cat, cl, cfg); err != nil {
 		return nil, nil, fmt.Errorf("register SCIM tools: %w", err)
 	}
+	if err := admin.Register(reg, cat, cl, cfg); err != nil {
+		return nil, nil, fmt.Errorf("register admin tools: %w", err)
+	}
 	registerLegacyAdminTools(s, cfg.ReadOnly)
 	reg.AddToServer(s)
 	return s, reg, nil
 }
 
-// registerLegacyAdminTools registers the Asgardeo SDK tools until T079–T080 migrate them.
+// registerLegacyAdminTools registers the Asgardeo SDK application tools until T079 migrates them.
 // create_user is served by the SCIM layer. With READ_ONLY=true only read tools are added.
 func registerLegacyAdminTools(s *server.MCPServer, readOnly bool) {
 	legacy := []func() (mcp.Tool, server.ToolHandlerFunc){
@@ -93,11 +97,6 @@ func registerLegacyAdminTools(s *server.MCPServer, readOnly bool) {
 		tools.GetAuthorizeAPITool,
 		tools.GetListAuthorizedAPITool,
 		tools.GetUpdateLoginFlowTool,
-		tools.GetListAPIResourcesTool,
-		tools.GetSearchAPIResourcesByNameTool,
-		tools.GetSearchAPIResourceByIdentifierTool,
-		tools.GetCreateAPIResourceTool,
-		tools.GetListClaimsTool,
 	}
 	for _, build := range legacy {
 		t, h := build()

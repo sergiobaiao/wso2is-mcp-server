@@ -32,10 +32,10 @@ asserted by a test that every referenced id exists).
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `update_api_resource` | write | `api_authorization.patchAPIResource` |
-| `add_api_resource_scopes` | write | `api_authorization.putAPIResourceScopes` (merge with existing) |
-| `delete_api_resource` | destructive | `api_authorization.deleteAPIResource` |
-| `list_oidc_scopes` | read | `api_authorization.getScopes` (OIDC) |
+| `update_api_resource` | write | `api_authorization.patchApiResourcesByApiresourceid` |
+| `add_api_resource_scopes` | write | `api_authorization.getApiResourcesByApiresourceidScopes` then `putApiResourcesByApiresourceidScopes` (merge with existing by name) |
+| `delete_api_resource` | destructive | `api_authorization.deleteApiResourcesByApiresourceid` |
+| `list_oidc_scopes` | read | `api_authorization.getApiServerV1OidcScopes` (OIDC) |
 | `create_oidc_scope` | write | `api_authorization.addScope` (OIDC) |
 
 ### identity_providers (5)
@@ -52,7 +52,7 @@ asserted by a test that every referenced id exists).
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `list_governance_connectors` | read | `governance_security.getCategories` (+ connectors) |
+| `list_governance_connectors` | read | `governance_security.getCategories`, or `getConnectorsOfCategory` with `category_id` |
 | `get_governance_connector` | read | `governance_security.getConnector` |
 | `update_governance_connector` | write | `governance_security.patchConnector` (password policy, account lock, self registration, recovery are connectors) |
 | `update_validation_rules` | write | `governance_security.updateValidationRules` |
@@ -63,7 +63,7 @@ asserted by a test that every referenced id exists).
 |---|---|---|
 | `list_user_stores` | read | `user_stores.getSecondaryUserStores` |
 | `get_user_store` | read | `user_stores.getUserStoreByDomainId` |
-| `create_user_store` | write | `user_stores.addUserStore` (types from `getUserStoreTypes`) |
+| `create_user_store` | write | `user_stores.addUserStore` (`type_name` resolved through `getAvailableUserStoreTypes`) |
 | `test_user_store_connection` | read | `user_stores.testRDBMSConnection` (POST, overridden to read) |
 
 ### user_lifecycle (2)
@@ -118,6 +118,15 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `create_local_claim` | write | `claims.addLocalClaim` |
+
+Organization variants: every root id above has an `<area>.org.<operationId>` twin used when
+the call passes `organization_id`, except the API resource writes (`addAPIResource`,
+`patchApiResourcesByApiresourceid`, `putApiResourcesByApiresourceidScopes`,
+`deleteApiResourcesByApiresourceid`), the OIDC scope tools and the session tools, which IS
+exposes only for the root organization. The migrated read tools `list_api_resources`,
+`search_api_resources_by_name` and `get_api_resource_by_identifier` use
+`api_authorization.getAPIResources` with a `filter`; `list_claims` uses `claims.getLocalClaims`
+(`exclude-hidden-claims=true` on the root variant, which is the only one that declares it).
 
 Operation ids in this file are expected names. The implementation task for each area first
 runs `search_operations` logic over the catalog to fix the exact ids and records them in the
