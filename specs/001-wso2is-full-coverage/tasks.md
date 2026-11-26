@@ -23,7 +23,8 @@ its own.
 
 ## Rules for the implementing agent
 
-- Read `AGENTS.md` and `.specify/memory/constitution.md` before the first task.
+- Read `AGENTS.md` (including section 8, mistakes earlier agents made) and
+  `.specify/memory/constitution.md` before the first task.
 - Every new `.go` file starts with the WSO2 Apache 2.0 header used in `cmd/self-service-mcp/main.go`.
 - A task is done only when `go build ./...`, `go vet ./...` and the tests named or touched by
   the task pass with `-race`.

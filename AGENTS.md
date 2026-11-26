@@ -193,3 +193,47 @@ Key facts that are easy to get wrong:
 - Write approval uses MCP elicitation when the client supports it, with annotations and
   descriptions as the fallback.
 - All artifacts are in English.
+
+## 8. Mistakes earlier agents made (do not repeat)
+
+Found while reviewing work an agent (Antigravity) left on 2026-11-25. Each item is a rule and
+the check that catches it. Read this section before the first task of a session.
+
+1. **Leaving work uncommitted.** Phases 1 and 2 and most of US1, US2, US4 and US8 were left as
+   untracked files, with nothing committed. Commit after each task or logical group (section 3).
+   Check: `git status --short` is empty, or holds only the current task, before you stop.
+2. **A tree that does not compile.** Seven `internal/tools/admin/<area>` packages had only
+   `_test.go` files, so `go vet ./...` and `go test ./...` failed for the whole module.
+   Test-first means a failing test, not a module that does not build. Write the implementation
+   in the same session, or do not leave the test files. Check: `go build ./... && go vet ./...`
+   passes before you stop.
+3. **Marking tasks `[X]` that were not done.** `cmd/wso2is-mcp/main.go` (T040) contained dead
+   placeholder code (`add := func(...) { _ = fn }`, `type mcpTool any`) and registered none of
+   the new tools. T051 was marked done while the file it replaces (`internal/tools/users.go`)
+   was still in use. A task is done only when its code is reachable from the binary, the files
+   it replaces are deleted, and the section 3 checks pass. Never commit placeholder code.
+4. **Disabling TLS verification.** `test/integration/spike_test.go` set
+   `InsecureSkipVerify: true`. This breaks the constitution (Principle III) even in tests.
+   Trust the IS CA through `CERT_PATH`. Check: `grep -rn InsecureSkipVerify --include=*.go .`
+   prints nothing.
+5. **A golden file that can be regenerated.** The admin compatibility test had an `-update`
+   flag that would overwrite `internal/tools/testdata/admin_tools.golden.json`. It also asserted
+   an exact count of 19 tools, which every new tool would break. The T001/T002 goldens record
+   the tools as they were before any change. They are a compatibility floor (no lost input, no
+   new required input) and are never regenerated.
+6. **Tests shaped to a simpler implementation.** The `update_login_flow` test faked only the
+   generate, status and result routes. That pushes the code to drop the context (authenticators,
+   identity providers, claims) that the original tool sent. Fake every IS call that the real
+   behavior makes; never weaken behavior to fit a test.
+7. **Code not formatted.** `internal/wso2is/catalog/areas.go`, `extra.go` and two admin tests
+   failed `gofmt -s -l`, which CI rejects. Run `make fmt` (or `gofmt -w -s`) before committing.
+   Note that a file with CRLF line endings is not a gofmt issue; git normalizes it.
+8. **Docs left behind the code.** AGENTS.md still said "implementation has not started", and
+   `quickstart.md` named integration variables (`IS_ADMIN_USER`, `IS_ADMIN_PASSWORD`) that no
+   test reads. Update the related markdown and Spec Kit artifacts in the same commit (section 3).
+9. **Generated files not ignored.** `.specify/scripts/python/__pycache__/` was left untracked.
+   Add generated output to `.gitignore` instead of leaving it in `git status`.
+
+Also check these before trusting a vendored spec: some request body schemas reject every
+valid body (research.md R2). Confirm a validation error against the spec before changing the
+request.
