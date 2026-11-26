@@ -226,14 +226,7 @@ func rejectOrgID(ctx context.Context, op *catalog.Operation, args map[string]any
 // endpoints whose vendored specs contain malformed schema definitions (e.g. schemas as object)
 // still pass through client.Do's parameter validation, auth/org-switch, scope wiring, and error handling.
 func withoutBodySchema(op *catalog.Operation) *catalog.Operation {
-	if op == nil || op.Body == nil || op.Body.Schema == nil {
-		return op
-	}
-	copied := *op
-	bodyCopy := *op.Body
-	bodyCopy.Schema = nil
-	copied.Body = &bodyCopy
-	return &copied
+	return toolkit.WithoutBodySchema(op)
 }
 
 func doOp(ctx context.Context, cl *client.Client, op *catalog.Operation, pathParams map[string]string, query map[string]any, body any) (any, error) {

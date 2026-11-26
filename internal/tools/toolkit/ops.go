@@ -125,6 +125,29 @@ func CallDeclared(ctx context.Context, cl *client.Client, p OpPair, path map[str
 	return cl.Do(ctx, op, path, KeepDeclared(op, q), body)
 }
 
+// WithoutBodySchema returns a copy of op without its request body schema. Use it only for
+// operations whose vendored schema rejects valid bodies (for example an ambiguous oneOf); the
+// parameters are still validated and IS validates the body.
+func WithoutBodySchema(op *catalog.Operation) *catalog.Operation {
+	if op == nil || op.Body == nil || op.Body.Schema == nil {
+		return op
+	}
+	copied := *op
+	body := *op.Body
+	body.Schema = nil
+	copied.Body = &body
+	return &copied
+}
+
+// CallUnvalidatedBody is Call without client-side body schema validation (see WithoutBodySchema).
+func CallUnvalidatedBody(ctx context.Context, cl *client.Client, p OpPair, path map[string]string, q map[string]any, body any) (any, error) {
+	op, err := p.Select(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return cl.Do(ctx, WithoutBodySchema(op), path, q, body)
+}
+
 // Call selects the operation for ctx and sends it through cl.
 func Call(ctx context.Context, cl *client.Client, p OpPair, path map[string]string, query map[string]any, body any) (any, error) {
 	op, err := p.Select(ctx)

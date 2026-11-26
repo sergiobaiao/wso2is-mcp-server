@@ -78,20 +78,20 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `list_organizations` | read | `organizations.organizationsGet` |
-| `get_organization` | read | `organizations.organizationsOrganizationIdGet` |
-| `create_organization` | write | `organizations.organizationsPost` |
-| `delete_organization` | destructive | `organizations.organizationsOrganizationIdDelete` |
-| `share_users` | write | `organizations.shareUsers` (v2) |
+| `get_organization` | read | `organizations.getOrganizationsByOrganizationId` (input `id`) |
+| `create_organization` | write | `organizations.organizationPost` |
+| `delete_organization` | destructive | `organizations.deleteOrganizationsByOrganizationId` (input `id`) |
+| `share_users` | write | `organizations.shareUsersWithSelected` with `organizations`, or `shareUsersWithAll` with `policy` (v2) |
 
 ### branding_notifications (5)
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `get_branding` | read | `branding_notifications.getBrandingPreference` |
+| `get_branding` | read | `branding_notifications.getBrandingPreference` (root organization only; type ORG and the tenant domain by default) |
 | `update_branding` | write | `branding_notifications.updateBrandingPreference` |
-| `configure_email_sender` | write | `branding_notifications.createEmailSender` / `updateEmailSender` (v2) |
-| `configure_sms_sender` | write | `branding_notifications.createSMSSender` / `updateSMSSender` (v2) |
-| `update_email_template` | write | `branding_notifications.updateEmailTemplate` (v2) |
+| `configure_email_sender` | write | `branding_notifications.getEmailSender`, then `updateEmailSender`, or `createEmailSender` on 404 (v2; default name `EmailPublisher`) |
+| `configure_sms_sender` | write | `branding_notifications.getSMSSender`, then `updateSMSSender`, or `postNotificationSendersSms` on 404 (v2; default name `SMSPublisher`; see research.md R2 for `createSMSSender`) |
+| `update_email_template` | write | `branding_notifications.updateOrgEmailTemplate` (v2, by template type id and locale) |
 
 ### extensions (6)
 
@@ -100,8 +100,8 @@ asserted by a test that every referenced id exists).
 | `list_webhooks` | read | `extensions.getWebhooks` |
 | `create_webhook` | write | `extensions.createWebhook` (events from webhook metadata) |
 | `delete_webhook` | destructive | `extensions.deleteWebhook` |
-| `list_actions` | read | `extensions.getActionTypes` + `getActionsByActionType` |
-| `create_action` | write | `extensions.createAction` (pre issue access token, pre issue ID token, pre update password, pre update profile) |
+| `list_actions` | read | `extensions.getActionsByActionType` for `action_type`; without it, `getActionTypes` then the actions of every type in use, as a list of `{action_type, actions}` |
+| `create_action` | write | `extensions.createAction` (action types of IS 7.3: `preIssueAccessToken`, `preUpdatePassword`, `preUpdateProfile`, `preRegistration`) |
 | `delete_action` | destructive | `extensions.deleteAction` |
 
 ### workflows_approvals (4)
@@ -109,7 +109,7 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `list_workflows` | read | `workflows_approvals.getWorkflows` |
-| `create_workflow` | write | `workflows_approvals.addWorkflow` |
+| `create_workflow` | write | `workflows_approvals.addWorkflow` (engine `WorkflowEngine` unless given) |
 | `associate_workflow` | write | `workflows_approvals.addWorkflowAssociation` |
 | `list_workflow_requests` | read | `workflows_approvals.getWorkflowInstances` |
 

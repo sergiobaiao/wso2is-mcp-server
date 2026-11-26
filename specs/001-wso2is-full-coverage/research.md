@@ -27,11 +27,12 @@ running IS 7.3 container by the spike tasks in `tasks.md` (T011–T012) before d
 |---|---|---|
 | Missing `operationId` | 135 operations in 23 files | Derive `<method><PathInPascalCase>` with path params as `By<Name>`, e.g. `GET /me/sessions/{session-id}` → `getMeSessionsBySessionId` |
 | Invalid `operationId` (spaces, `*`) | 6 (`getUser by id`, `getGroup by id` ×2 each, `Initiate Authentication*`, `Handle Authentication`) | Sanitize to lowerCamelCase ASCII (`getUserById`) |
-| Duplicate `operationId` in one file | `createSMSSender` in 4 notification-sender files | Second occurrence gets the derived name |
+| Duplicate `operationId` in one file | `createSMSSender` in 4 notification-sender files | Second occurrence gets the derived name. In `notification-senders-v2` the first occurrence is the push sender, so `branding_notifications.createSMSSender` is `POST /v2/notification-senders/push` and the SMS create is `branding_notifications.postNotificationSendersSms` |
 | Swagger 2.0 files | `root/scim2-schemas.yaml`, `root/user-consent.yaml` | Convert with `openapi2conv.ToV3` at load time |
 | Missing or misleading `servers` | `scim2-schemas` (none), `authentication-api` (swaggerhub), `admin-identity-verification` and `user-identity-verification` (asgardeo.io), `org/end-user-credential-management` and `org/rule-metadata` (root URL in org spec) | Path prefix comes from a per-file table in code when `servers` is absent or wrong; otherwise from the part of `servers[0].url` after `/t/{tenant}` |
 | Duplicated specs | `self-service.yaml` = `self-sign-up.yaml` (11 operations) | Deduplicate by `(family, method, full path)`; first file in sorted order wins |
 | Scopes only in description text | 263 distinct `internal_*` scopes; 10 specs declare none | Regex `internal_[a-z0-9_]+` over operation description; empty set allowed |
+| Request body schemas no valid body satisfies (found during US5) | `notification-senders-v2` email sender create and update (`oneOf` SMTP/HTTP variants without required fields, so every body matches both); `email-templates-v2` `EmailTemplateWithID` (`allOf` an object and an array) | Curated tools for these operations skip client-side body validation with `toolkit.CallUnvalidatedBody`; IS still validates the body. SCIM tools do the same for their malformed schemas. Catalog tools keep validating |
 
 Operation identifiers exposed to agents are `<area>.<operationId>` with the family encoded in
 the area for org specs (see data-model.md, Operation.ID) to stay unique across 116 files.

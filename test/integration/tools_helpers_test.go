@@ -29,6 +29,7 @@ import (
 
 	apispecs "github.com/asgardeo/mcp/api-specs"
 	"github.com/asgardeo/mcp/internal/config"
+	"github.com/asgardeo/mcp/internal/tools/admin"
 	catalogtools "github.com/asgardeo/mcp/internal/tools/catalog"
 	"github.com/asgardeo/mcp/internal/tools/scim"
 	"github.com/asgardeo/mcp/internal/tools/toolkit"
@@ -38,8 +39,8 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-// toolSet holds the admin tools built the way cmd/wso2is-mcp builds them (catalog and SCIM
-// layers), configured from the environment in contracts/configuration.md.
+// toolSet holds the admin tools built the way cmd/wso2is-mcp builds them (catalog, SCIM and
+// admin layers), configured from the environment in contracts/configuration.md.
 type toolSet struct {
 	byName map[string]server.ServerTool
 }
@@ -71,6 +72,9 @@ func newToolSet(t *testing.T) *toolSet {
 	}
 	if err := scim.Register(reg, cat, cl, cfg); err != nil {
 		t.Fatalf("register SCIM tools: %v", err)
+	}
+	if err := admin.Register(reg, cat, cl, cfg); err != nil {
+		t.Fatalf("register admin tools: %v", err)
 	}
 	ts := &toolSet{byName: map[string]server.ServerTool{}}
 	for _, st := range reg.ServerTools() {

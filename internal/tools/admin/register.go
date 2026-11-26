@@ -26,11 +26,15 @@ import (
 	"github.com/asgardeo/mcp/internal/config"
 	"github.com/asgardeo/mcp/internal/tools/admin/apiauth"
 	"github.com/asgardeo/mcp/internal/tools/admin/applications"
+	"github.com/asgardeo/mcp/internal/tools/admin/branding"
 	"github.com/asgardeo/mcp/internal/tools/admin/claims"
+	"github.com/asgardeo/mcp/internal/tools/admin/extensions"
 	"github.com/asgardeo/mcp/internal/tools/admin/governance"
 	"github.com/asgardeo/mcp/internal/tools/admin/idp"
+	"github.com/asgardeo/mcp/internal/tools/admin/organizations"
 	"github.com/asgardeo/mcp/internal/tools/admin/sessions"
 	"github.com/asgardeo/mcp/internal/tools/admin/userstores"
+	"github.com/asgardeo/mcp/internal/tools/admin/workflows"
 	"github.com/asgardeo/mcp/internal/tools/toolkit"
 	"github.com/asgardeo/mcp/internal/wso2is/catalog"
 	"github.com/asgardeo/mcp/internal/wso2is/client"
@@ -38,8 +42,7 @@ import (
 
 type areaTools func(*catalog.Catalog, *client.Client, *config.Config) ([]toolkit.ToolDef, error)
 
-// areas lists the migrated and new admin areas in registration order. Areas still to come are
-// tracked in specs/001-wso2is-full-coverage/tasks.md (US5).
+// areas lists the admin areas of contracts/admin-curated-tools.md in registration order.
 var areas = []struct {
 	name  string
 	tools areaTools
@@ -51,6 +54,10 @@ var areas = []struct {
 	{"governance_security", governance.Tools},
 	{"user_stores", userstores.Tools},
 	{"user_lifecycle", sessions.Tools},
+	{"organizations", organizations.Tools},
+	{"branding_notifications", branding.Tools},
+	{"extensions", extensions.Tools},
+	{"workflows_approvals", workflows.Tools},
 }
 
 // Register adds the curated admin tools of every area to reg. A missing catalog operation is an

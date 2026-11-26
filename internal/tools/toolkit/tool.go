@@ -131,11 +131,18 @@ func BuildTool(def ToolDef, maxResponseBytes int) (server.ServerTool, error) {
 				args = map[string]any{}
 			}
 
-			if def.OrgCapable {
-				if orgID, ok := args["organization_id"].(string); ok {
-					if trimmed := strings.TrimSpace(orgID); trimmed != "" {
-						ctx = client.WithOrganizationID(ctx, trimmed)
+			if orgID, ok := args["organization_id"].(string); ok {
+				if trimmed := strings.TrimSpace(orgID); trimmed != "" {
+					if !def.OrgCapable {
+						// Never run a root-only tool in the root organization when the caller asked
+						// for a sub-organization.
+						target := def.Name
+						if def.Operation != nil {
+							target = def.Operation.ID
+						}
+						return mcp.NewToolResultError(fmt.Sprintf("operation %s is not available for organizations", target)), nil
 					}
+					ctx = client.WithOrganizationID(ctx, trimmed)
 				}
 			}
 

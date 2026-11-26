@@ -25,6 +25,7 @@ import (
 
 	"github.com/asgardeo/mcp/internal/wso2is/catalog"
 	"github.com/asgardeo/mcp/internal/wso2is/client"
+	"github.com/mark3labs/mcp-go/mcp"
 )
 
 func TestOpPairSelect(t *testing.T) {
@@ -47,6 +48,28 @@ func TestOpPairSelect(t *testing.T) {
 	}
 	if _, err := Lookup(&catalog.Catalog{}, "a.getX"); err == nil {
 		t.Fatal("Lookup on empty catalog must fail")
+	}
+}
+
+func TestRootOnlyToolRefusesOrganizationID(t *testing.T) {
+	def := ToolDef{
+		Name: "root_only", Layer: LayerCurated, Kind: catalog.KindRead,
+		Operation: &catalog.Operation{ID: "a.getX"},
+		Handler:   func(context.Context, map[string]any) (any, error) { return "ran", nil },
+	}
+	st, err := BuildTool(def, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := mcp.CallToolRequest{}
+	req.Params.Arguments = map[string]any{"organization_id": "org-1"}
+	res, err := st.Handler(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := res.Content[0].(mcp.TextContent).Text
+	if !res.IsError || text != "operation a.getX is not available for organizations" {
+		t.Fatalf("result = %v %q", res.IsError, text)
 	}
 }
 

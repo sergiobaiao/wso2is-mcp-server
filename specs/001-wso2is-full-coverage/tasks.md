@@ -218,10 +218,10 @@ transport, new admin binary. No user story starts before this phase is complete.
 
 ### Tests for User Story 5
 
-- [ ] T075 [US5] Write `internal/tools/admin/compat_test.go`: the registered admin tools still match `internal/tools/testdata/admin_tools.golden.json` (captured by T001 before any change), allowing only added optional `organization_id` and annotations; plus output-shape assertions for the 19 existing tools against `istest`
-- [ ] T076 [P] [US5] Write `internal/tools/admin/operations_test.go`: every catalog operation id referenced by a curated tool exists in the 7.3.0 catalog
-- [ ] T077 [P] [US5] Write `internal/tools/admin/budget_test.go`: default config registers ≤ 100 tools (SC-002) and exactly the names listed in `contracts/admin-curated-tools.md`, `contracts/scim-tools.md` and `contracts/catalog-tools.md`
-- [ ] T078 [P] [US5] Write tests per area in `internal/tools/admin/applications/applications_test.go`, `internal/tools/admin/apiauth/apiauth_test.go`, `internal/tools/admin/idp/idp_test.go`, `internal/tools/admin/governance/governance_test.go`, `internal/tools/admin/userstores/userstores_test.go`, `internal/tools/admin/sessions/sessions_test.go`, `internal/tools/admin/organizations/organizations_test.go`, `internal/tools/admin/branding/branding_test.go`, `internal/tools/admin/extensions/extensions_test.go`, `internal/tools/admin/workflows/workflows_test.go`, `internal/tools/admin/claims/claims_test.go` covering each tool in `contracts/admin-curated-tools.md` (request shape, kind, redaction of secrets such as client secrets and IdP secrets)
+- [X] T075 [US5] Admin compatibility with `internal/tools/testdata/admin_tools.golden.json` (captured by T001 before any change): implemented in `cmd/wso2is-mcp/compat_test.go`, which builds the real server (no lost inputs, no new required inputs; added optional inputs, annotations and descriptions allowed); output shapes of the 19 existing tools are asserted against `istest` in the `applications`, `apiauth`, `claims` and `scim` tests
+- [X] T076 [P] [US5] Every catalog operation id referenced by a curated tool exists in the 7.3.0 catalog: each area `Tools` fails on a missing id (asserted by `internal/tools/admin/admintest` and the area tests), and `internal/tools/admin/register_test.go` registers all layers against the 7.3.0 catalog
+- [X] T077 [P] [US5] `internal/tools/admin/register_test.go`: default config registers ≤ 100 tools (SC-002) and exactly the names listed in `contracts/admin-curated-tools.md`, `contracts/scim-tools.md` and `contracts/catalog-tools.md` (94), and READ_ONLY registers only read tools
+- [X] T078 [P] [US5] Write tests per area in `internal/tools/admin/applications/applications_test.go`, `internal/tools/admin/apiauth/apiauth_test.go`, `internal/tools/admin/idp/idp_test.go`, `internal/tools/admin/governance/governance_test.go`, `internal/tools/admin/userstores/userstores_test.go`, `internal/tools/admin/sessions/sessions_test.go`, `internal/tools/admin/organizations/organizations_test.go`, `internal/tools/admin/branding/branding_test.go`, `internal/tools/admin/extensions/extensions_test.go`, `internal/tools/admin/workflows/workflows_test.go`, `internal/tools/admin/claims/claims_test.go` covering each tool in `contracts/admin-curated-tools.md` (request shape, kind, redaction of secrets such as client secrets and IdP secrets)
 
 ### Implementation for User Story 5
 
@@ -233,13 +233,13 @@ transport, new admin binary. No user story starts before this phase is complete.
 - [X] T084 [P] [US5] Implement the 4 governance_security tools in `internal/tools/admin/governance/governance.go`
 - [X] T085 [P] [US5] Implement the 4 user_stores tools in `internal/tools/admin/userstores/userstores.go`
 - [X] T086 [P] [US5] Implement the 2 session tools in `internal/tools/admin/sessions/sessions.go`
-- [ ] T087 [P] [US5] Implement the 5 organizations tools in `internal/tools/admin/organizations/organizations.go`
-- [ ] T088 [P] [US5] Implement the 5 branding_notifications tools in `internal/tools/admin/branding/branding.go`
-- [ ] T089 [P] [US5] Implement the 6 extensions tools in `internal/tools/admin/extensions/extensions.go`
-- [ ] T090 [P] [US5] Implement the 4 workflows_approvals tools in `internal/tools/admin/workflows/workflows.go`
+- [X] T087 [P] [US5] Implement the 5 organizations tools in `internal/tools/admin/organizations/organizations.go`
+- [X] T088 [P] [US5] Implement the 5 branding_notifications tools in `internal/tools/admin/branding/branding.go`
+- [X] T089 [P] [US5] Implement the 6 extensions tools in `internal/tools/admin/extensions/extensions.go`
+- [X] T090 [P] [US5] Implement the 4 workflows_approvals tools in `internal/tools/admin/workflows/workflows.go`
 - [X] T091 [P] [US5] Add `create_local_claim` in `internal/tools/admin/claims/claims.go`
-- [ ] T092 [US5] Create `internal/tools/admin/register.go` (registers all admin areas) and call it from `cmd/wso2is-mcp/main.go`; T075–T078 pass
-- [ ] T093 [US5] Add `test/integration/admin_test.go` (`//go:build integration`) covering SC-004: `create_single_page_app`; `create_api_resource` with two scopes, `create_role`, `update_role_permissions` with those scopes and `assign_role_to_user`; `create_user` then `add_user_to_group`; and `list_users` with `organization_id` of a sub-organization
+- [X] T092 [US5] Create `internal/tools/admin/register.go` (registers all admin areas) and call it from `cmd/wso2is-mcp/main.go`; T075–T078 pass
+- [X] T093 [US5] Add `test/integration/admin_test.go` (`//go:build integration`) covering SC-004: `create_single_page_app`; `create_api_resource` with two scopes, `create_role`, `update_role_permissions` with those scopes and `assign_role_to_user`; `create_user` then `add_user_to_group`; and `list_users` with `organization_id` of a sub-organization
 
 **Checkpoint**: 90 curated tools + 4 catalog tools by default.
 
