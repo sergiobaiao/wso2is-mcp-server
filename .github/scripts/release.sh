@@ -18,7 +18,7 @@ UPSTREAM_BRANCH="main"
 GIT_TOKEN=$1
 WORK_DIR=$2
 VERSION_TYPE=$3 # possible values: major, minor, patch
-SERVER=$4 # possible values: asgardeo-mcp, self-service-mcp
+SERVER=$4 # possible values: wso2is-mcp, self-service-mcp
 
 # Check if GIT_TOKEN is empty
 if [ -z "$GIT_TOKEN" ]; then
@@ -40,12 +40,12 @@ fi
 
 # Each server is released with its own tags and packages.
 case "$SERVER" in
-  asgardeo-mcp)
-    TAG_PREFIX="asgardeo-mcp-v"
-    # Releases before the self-service server were tagged vX.Y.Z.
-    LEGACY_TAG_PREFIX="v"
-    PACKAGE_PREFIX="asgardeo_mcp_server"
-    SERVER_NAME="Asgardeo MCP Server"
+  wso2is-mcp)
+    TAG_PREFIX="wso2is-mcp-v"
+    # Releases before the rename used asgardeo-mcp-vX.Y.Z or vX.Y.Z.
+    LEGACY_TAG_PREFIXES=("asgardeo-mcp-v" "v")
+    PACKAGE_PREFIX="wso2is_mcp_server"
+    SERVER_NAME="WSO2 IS MCP Server"
     MARK_LATEST="true"
     ;;
   self-service-mcp)
@@ -55,7 +55,7 @@ case "$SERVER" in
     MARK_LATEST="false"
     ;;
   *)
-    echo "❌ Error: SERVER must be one of: asgardeo-mcp or self-service-mcp."
+    echo "❌ Error: SERVER must be one of: wso2is-mcp or self-service-mcp."
     exit 1
     ;;
 esac
@@ -75,7 +75,7 @@ fi
 
 # Extract the current version of this server only.
 CURRENT_VERSION=$(
-  for prefix in "${TAG_PREFIX}" ${LEGACY_TAG_PREFIX:+"$LEGACY_TAG_PREFIX"}; do
+  for prefix in "${TAG_PREFIX}" "${LEGACY_TAG_PREFIXES[@]}"; do
     git tag -l "${prefix}*" | grep -E "^${prefix}[0-9]+\.[0-9]+\.[0-9]+$" | sed "s/^${prefix}//" || true
   done | sort -t. -k1,1n -k2,2n -k3,3n | tail -n 1
 )

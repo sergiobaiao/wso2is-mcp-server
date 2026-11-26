@@ -26,16 +26,16 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `delete_application` | destructive | `applications.deleteApplication` |
-| `share_application` | write | `applications.shareOrgApplication` (share with all or listed orgs) |
+| `share_application` | write | `applications.shareOrgApplication` (share with all or listed orgs; root organization only) |
 
 ### api_authorization (5)
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `update_api_resource` | write | `api_authorization.patchAPIResource` |
-| `add_api_resource_scopes` | write | `api_authorization.putAPIResourceScopes` (merge with existing) |
-| `delete_api_resource` | destructive | `api_authorization.deleteAPIResource` |
-| `list_oidc_scopes` | read | `api_authorization.getScopes` (OIDC) |
+| `update_api_resource` | write | `api_authorization.patchApiResourcesByApiresourceid` |
+| `add_api_resource_scopes` | write | `api_authorization.getApiResourcesByApiresourceidScopes` then `putApiResourcesByApiresourceidScopes` (merge with existing by name) |
+| `delete_api_resource` | destructive | `api_authorization.deleteApiResourcesByApiresourceid` |
+| `list_oidc_scopes` | read | `api_authorization.getApiServerV1OidcScopes` (OIDC) |
 | `create_oidc_scope` | write | `api_authorization.addScope` (OIDC) |
 
 ### identity_providers (5)
@@ -52,7 +52,7 @@ asserted by a test that every referenced id exists).
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `list_governance_connectors` | read | `governance_security.getCategories` (+ connectors) |
+| `list_governance_connectors` | read | `governance_security.getCategories`, or `getConnectorsOfCategory` with `category_id` |
 | `get_governance_connector` | read | `governance_security.getConnector` |
 | `update_governance_connector` | write | `governance_security.patchConnector` (password policy, account lock, self registration, recovery are connectors) |
 | `update_validation_rules` | write | `governance_security.updateValidationRules` |
@@ -63,7 +63,7 @@ asserted by a test that every referenced id exists).
 |---|---|---|
 | `list_user_stores` | read | `user_stores.getSecondaryUserStores` |
 | `get_user_store` | read | `user_stores.getUserStoreByDomainId` |
-| `create_user_store` | write | `user_stores.addUserStore` (types from `getUserStoreTypes`) |
+| `create_user_store` | write | `user_stores.addUserStore` (`type_name` resolved through `getAvailableUserStoreTypes`) |
 | `test_user_store_connection` | read | `user_stores.testRDBMSConnection` (POST, overridden to read) |
 
 ### user_lifecycle (2)
@@ -78,20 +78,20 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `list_organizations` | read | `organizations.organizationsGet` |
-| `get_organization` | read | `organizations.organizationsOrganizationIdGet` |
-| `create_organization` | write | `organizations.organizationsPost` |
-| `delete_organization` | destructive | `organizations.organizationsOrganizationIdDelete` |
-| `share_users` | write | `organizations.shareUsers` (v2) |
+| `get_organization` | read | `organizations.getOrganizationsByOrganizationId` (input `id`) |
+| `create_organization` | write | `organizations.organizationPost` |
+| `delete_organization` | destructive | `organizations.deleteOrganizationsByOrganizationId` (input `id`) |
+| `share_users` | write | `organizations.shareUsersWithSelected` with `organizations`, or `shareUsersWithAll` with `policy` (v2) |
 
 ### branding_notifications (5)
 
 | Tool | Kind | Operation |
 |---|---|---|
-| `get_branding` | read | `branding_notifications.getBrandingPreference` |
+| `get_branding` | read | `branding_notifications.getBrandingPreference` (root organization only; type ORG and the tenant domain by default) |
 | `update_branding` | write | `branding_notifications.updateBrandingPreference` |
-| `configure_email_sender` | write | `branding_notifications.createEmailSender` / `updateEmailSender` (v2) |
-| `configure_sms_sender` | write | `branding_notifications.createSMSSender` / `updateSMSSender` (v2) |
-| `update_email_template` | write | `branding_notifications.updateEmailTemplate` (v2) |
+| `configure_email_sender` | write | `branding_notifications.getEmailSender`, then `updateEmailSender`, or `createEmailSender` on 404 (v2; default name `EmailPublisher`) |
+| `configure_sms_sender` | write | `branding_notifications.getSMSSender`, then `updateSMSSender`, or `postNotificationSendersSms` on 404 (v2; default name `SMSPublisher`; see research.md R2 for `createSMSSender`) |
+| `update_email_template` | write | `branding_notifications.updateOrgEmailTemplate` (v2, by template type id and locale) |
 
 ### extensions (6)
 
@@ -100,8 +100,8 @@ asserted by a test that every referenced id exists).
 | `list_webhooks` | read | `extensions.getWebhooks` |
 | `create_webhook` | write | `extensions.createWebhook` (events from webhook metadata) |
 | `delete_webhook` | destructive | `extensions.deleteWebhook` |
-| `list_actions` | read | `extensions.getActionTypes` + `getActionsByActionType` |
-| `create_action` | write | `extensions.createAction` (pre issue access token, pre issue ID token, pre update password, pre update profile) |
+| `list_actions` | read | `extensions.getActionsByActionType` for `action_type`; without it, `getActionTypes` then the actions of every type in use, as a list of `{action_type, actions}` |
+| `create_action` | write | `extensions.createAction` (action types of IS 7.3: `preIssueAccessToken`, `preUpdatePassword`, `preUpdateProfile`, `preRegistration`) |
 | `delete_action` | destructive | `extensions.deleteAction` |
 
 ### workflows_approvals (4)
@@ -109,7 +109,7 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `list_workflows` | read | `workflows_approvals.getWorkflows` |
-| `create_workflow` | write | `workflows_approvals.addWorkflow` |
+| `create_workflow` | write | `workflows_approvals.addWorkflow` (engine `WorkflowEngine` unless given) |
 | `associate_workflow` | write | `workflows_approvals.addWorkflowAssociation` |
 | `list_workflow_requests` | read | `workflows_approvals.getWorkflowInstances` |
 
@@ -118,6 +118,26 @@ asserted by a test that every referenced id exists).
 | Tool | Kind | Operation |
 |---|---|---|
 | `create_local_claim` | write | `claims.addLocalClaim` |
+
+Organization variants: every root id above has an `<area>.org.<operationId>` twin used when
+the call passes `organization_id`, except the API resource writes (`addAPIResource`,
+`patchApiResourcesByApiresourceid`, `putApiResourcesByApiresourceidScopes`,
+`deleteApiResourcesByApiresourceid`), the OIDC scope tools and the session tools, which IS
+exposes only for the root organization. The migrated read tools `list_api_resources`,
+`search_api_resources_by_name` and `get_api_resource_by_identifier` use
+`api_authorization.getAPIResources` with a `filter`; `list_claims` uses `claims.getLocalClaims`
+(`exclude-hidden-claims=true` on the root variant, which is the only one that declares it).
+
+The migrated application tools use `applications.getAllApplications`, `createApplication`,
+`getApplication`, `patchApplication`, `getInboundOAuthConfiguration`,
+`updateInboundOAuthConfiguration`, `addAuthorizedAPI` and `getAuthorizedAPIs` (all with
+organization variants). After a create, the new application is read back by name. The
+`get_application_by_*` scope list adds OIDC scopes through
+`api_authorization.getApiServerV1OidcScopes` and `claims.getExternalClaims` (OIDC dialect), in the
+root organization only. `update_login_flow` (root only) sends the local authenticators
+(`identity_providers.getAuthenticators`), the identity providers (`getIDPs`) and the visible local
+claims to `applications.generateLoginFlow`, polls `getLoginFlowStatus` every 2 s for up to
+3 minutes, and patches the application with the `getLoginFlowResult` sequence.
 
 Operation ids in this file are expected names. The implementation task for each area first
 runs `search_operations` logic over the catalog to fix the exact ids and records them in the

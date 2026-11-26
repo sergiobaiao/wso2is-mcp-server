@@ -85,8 +85,13 @@ exists.
 ## 7. Integration suite
 
 ```bash
-IS_URL=https://localhost:9443 IS_ADMIN_USER=admin IS_ADMIN_PASSWORD=<local admin password> \
-go test -tags integration -race ./test/integration/...
+SERVER_URL=https://localhost:9443 CLIENT_ID=<mcp-admin id> CLIENT_SECRET=<mcp-admin secret> IS_URL=https://localhost:9443 IS_CLIENT_ID=<mcp-admin id> IS_CLIENT_SECRET=<mcp-admin secret> CERT_PATH=is-ca.pem go test -tags integration -race ./test/integration/...
 ```
+
+The tool-level tests (`catalog_test.go` for section 2, `scim_test.go` for section 3) read the
+server configuration (`SERVER_URL`, `CLIENT_ID`, `CLIENT_SECRET`, `CERT_PATH`). The spike tests
+(T011) read `IS_URL`, `IS_CLIENT_ID`, `IS_CLIENT_SECRET`, `IS_ORG_ID`, `MCP_RESOURCE` and
+`IS_MCP_CLIENT_JWT`. A test whose variables are missing is skipped. TLS verification is never
+disabled; `CERT_PATH` supplies the IS CA.
 
 Expected: all pass against the container.

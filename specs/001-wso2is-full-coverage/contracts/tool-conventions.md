@@ -29,6 +29,9 @@
 
 - JSON Schema objects; required fields listed; no `additionalProperties` for curated tools.
 - `organization_id` (string, optional) on every org-capable tool.
+- A tool that is not org-capable refuses a non-empty `organization_id` with
+  `operation <id> is not available for organizations` and sends nothing, so it never runs in
+  the root organization by mistake (enforced in `internal/tools/toolkit`).
 - Agents never pass `Authorization`, `Content-Type` or `Accept`.
 
 ## Approval (elicitation, FR-017a)

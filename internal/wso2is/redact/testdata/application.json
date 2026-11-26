@@ -1,0 +1,6 @@
+{
+  "id": "app-1",
+  "name": "my-spa-app",
+  "clientId": "oauth-client-id-123",
+  "clientSecret": "super-secret-oauth-client-secret"
+}

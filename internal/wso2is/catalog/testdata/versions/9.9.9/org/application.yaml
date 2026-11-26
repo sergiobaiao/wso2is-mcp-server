@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  title: Organization Applications
+  version: 9.9.9
+servers:
+  - url: https://{serverUrl}/t/{tenantDomain}/o/api/server/v1
+paths:
+  /applications:
+    post:
+      operationId: createApplication
+      summary: Create org application
+      description: |
+        <b>Scope required:</b>
+        * internal_org_application_mgt_create
+      responses:
+        '201':
+          description: Created

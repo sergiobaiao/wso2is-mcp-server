@@ -23,7 +23,7 @@
 hs_err_pid*
 replay_pid*
 .env
-/asgardeo-mcp
+/wso2is-mcp
 /self-service-mcp
 
 build
@@ -33,3 +33,9 @@ build
 
 # Claude Code local settings
 .claude/settings.local.json
+
+*.exe
+*.test
+*.out
+# Python bytecode from Spec Kit scripts
+__pycache__/

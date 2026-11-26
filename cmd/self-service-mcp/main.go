@@ -20,19 +20,17 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
+	"strconv"
 
 	"github.com/asgardeo/go/pkg/sdk"
 	"github.com/asgardeo/mcp/internal/config"
 	"github.com/asgardeo/mcp/internal/selfservice"
 	"github.com/asgardeo/mcp/internal/tools/enduser"
+	"github.com/asgardeo/mcp/internal/transport"
 	"github.com/mark3labs/mcp-go/server"
 )
 
@@ -65,18 +63,18 @@ func setupServer(client *sdk.Client) *server.MCPServer {
 
 func main() {
 	// Over HTTP, each request carries its own token.
-	transport := os.Getenv(config.TRANSPORT_PARAM)
+	transportMode := os.Getenv(config.TRANSPORT_PARAM)
 	token := ""
-	switch transport {
+	switch transportMode {
 	case "", "http":
-		transport = "http"
+		transportMode = "http"
 	case "stdio":
 		token = os.Getenv(config.ACCESS_TOKEN_PARAM)
 		if token == "" {
 			log.Fatalf("Configuration error: missing required environment variable ACCESS_TOKEN")
 		}
 	default:
-		log.Fatalf("Configuration error: TRANSPORT must be stdio or http, got %q", transport)
+		log.Fatalf("Configuration error: TRANSPORT must be stdio or http, got %q", transportMode) //nolint:gosec // G706: value comes from the operator environment and is quoted
 	}
 
 	client, err := selfservice.NewClient(token)
@@ -85,58 +83,31 @@ func main() {
 	}
 	s := setupServer(client)
 
-	if transport == "http" {
-		err = serveHTTP(s)
+	if transportMode == "http" {
+		port := os.Getenv(config.PORT_PARAM)
+		if port == "" {
+			port = config.DefaultPort
+		}
+		stateless := false
+		if raw := os.Getenv(config.MCP_STATELESS_PARAM); raw != "" {
+			stateless, err = strconv.ParseBool(raw)
+			if err != nil {
+				log.Fatalf("Configuration error: invalid %s=%q: %v", config.MCP_STATELESS_PARAM, raw, err) //nolint:gosec // G706: value comes from the operator environment and is quoted
+			}
+		}
+		log.Printf("Self Service MCP listening on :%q/mcp", port) //nolint:gosec // G706: value comes from the operator environment and is quoted
+		err = transport.Serve(s, transportMode, transport.HTTPOptions{
+			Port:       port,
+			Stateless:  stateless,
+			Middleware: transport.RequireAuthorization,
+			ContextFunc: func(ctx context.Context, r *http.Request) context.Context {
+				return selfservice.WithAuthorization(ctx, r.Header.Get("Authorization"))
+			},
+		})
 	} else {
-		err = server.ServeStdio(s)
+		err = transport.ServeStdio(s)
 	}
 	if err != nil {
 		log.Fatalf("Server error: %v", err)
 	}
-}
-
-// serveHTTP serves MCP over Streamable HTTP at /mcp.
-func serveHTTP(s *server.MCPServer) error {
-	port := os.Getenv(config.PORT_PARAM)
-	if port == "" {
-		port = "8000"
-	}
-
-	mcpHandler := server.NewStreamableHTTPServer(s,
-		server.WithStateLess(true),
-		server.WithHTTPContextFunc(func(ctx context.Context, r *http.Request) context.Context {
-			return selfservice.WithAuthorization(ctx, r.Header.Get("Authorization"))
-		}),
-	)
-	mux := http.NewServeMux()
-	mux.Handle("/mcp", requireAuthorization(mcpHandler))
-	srv := &http.Server{Addr: ":" + port, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
-
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-	shutdownErr := make(chan error, 1)
-	go func() {
-		<-ctx.Done()
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		shutdownErr <- srv.Shutdown(shutdownCtx)
-	}()
-
-	log.Printf("Self Service MCP listening on :%s/mcp", port)
-	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-		return err
-	}
-	return <-shutdownErr
-}
-
-// requireAuthorization rejects requests without a bearer token.
-func requireAuthorization(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if selfservice.BearerToken(r.Header.Get("Authorization")) == "" {
-			w.Header().Set("WWW-Authenticate", "Bearer")
-			http.Error(w, "missing bearer token in the Authorization header", http.StatusUnauthorized)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
 }

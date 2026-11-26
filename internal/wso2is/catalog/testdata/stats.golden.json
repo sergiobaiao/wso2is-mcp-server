@@ -1,0 +1,43 @@
+{
+  "version": "7.3.0",
+  "spec_files": 116,
+  "root_spec_files": 81,
+  "org_spec_files": 35,
+  "published_ops": 923,
+  "duplicate_skipped": 21,
+  "extra_ops": 3,
+  "unique_ops": 905,
+  "by_family": {
+    "org": 275,
+    "root": 630
+  },
+  "by_area": {
+    "agents": 6,
+    "api_authorization": 28,
+    "applications": 106,
+    "branding_notifications": 192,
+    "claims": 27,
+    "consents": 41,
+    "extensions": 30,
+    "flows": 45,
+    "governance_security": 73,
+    "groups": 14,
+    "identity_providers": 107,
+    "organizations": 65,
+    "roles": 21,
+    "self_service_me": 16,
+    "tenants": 11,
+    "user_lifecycle": 43,
+    "user_stores": 30,
+    "users": 25,
+    "verifiable_credentials": 7,
+    "workflows_approvals": 18
+  },
+  "by_kind": {
+    "destructive": 153,
+    "read": 405,
+    "write": 347
+  },
+  "flow_ops": 46,
+  "deprecated_ops": 59
+}

@@ -16,7 +16,7 @@ on:
         type: choice
         description: Choose the MCP server to release
         options:
-            - 'asgardeo-mcp'
+            - 'wso2is-mcp'
             - 'self-service-mcp'
         required: true
       version_type:

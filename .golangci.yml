@@ -1,0 +1,24 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - errorlint
+    - gosec
+    - revive
+  settings:
+    revive:
+      rules:
+        - name: var-naming
+          disabled: false
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+      # Upstream ALL_CAPS constant names are kept so asgardeo-mcp-server changes cherry-pick
+      # cleanly (constitution Principle I).
+      - path: internal/config/constants\.go
+        linters:
+          - revive
+        text: var-naming

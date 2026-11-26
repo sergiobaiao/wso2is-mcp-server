@@ -1,0 +1,6 @@
+{
+  "username": "alice",
+  "qrCodeUrl": "otpauth://totp/alice?secret=JBSWY3DPEHPK3PXP",
+  "secret": "JBSWY3DPEHPK3PXP",
+  "backupCodes": ["backup-code-1111", "backup-code-2222"]
+}

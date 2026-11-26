@@ -1,0 +1,9 @@
+{
+  "id": "us-1",
+  "name": "PRIMARY-LDAP",
+  "properties": [
+    {"name": "ConnectionName", "value": "cn=admin,dc=example,dc=com"},
+    {"name": "ConnectionPassword", "value": "ldap-bind-password-999"},
+    {"key": "dbPassword", "value": "db-conn-pass-888"}
+  ]
+}

@@ -1,0 +1,4 @@
+repository: https://github.com/wso2/docs-is
+commit: 832c86be91f9753ecc67054f5737a5f0e389f395
+root_path: en/identity-server/7.3.0/docs/apis/restapis
+org_path: en/identity-server/7.3.0/docs/apis/organization-apis/restapis

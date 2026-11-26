@@ -1,0 +1,182 @@
+[
+  {
+    "area": "applications",
+    "task": "List all registered applications",
+    "expected_id": "applications.getAllApplications",
+    "queries": ["list all applications", "getAllApplications"]
+  },
+  {
+    "area": "applications",
+    "task": "Create a new application",
+    "expected_id": "applications.createApplication",
+    "queries": ["create application", "new application"]
+  },
+  {
+    "area": "applications",
+    "task": "Delete an application",
+    "expected_id": "applications.deleteApplication",
+    "queries": ["delete application", "remove application"]
+  },
+  {
+    "area": "applications",
+    "task": "Regenerate an application OAuth client secret",
+    "expected_id": "applications.regenerateOAuthClientSecret",
+    "queries": ["regenerate oauth client secret", "rotate application secret"]
+  },
+  {
+    "area": "api_authorization",
+    "task": "List registered API resources",
+    "expected_id": "api_authorization.getAPIResources",
+    "queries": ["list api resources", "get api resources"]
+  },
+  {
+    "area": "api_authorization",
+    "task": "Register a new API resource",
+    "expected_id": "api_authorization.addAPIResource",
+    "queries": ["add api resource", "create api resource"]
+  },
+  {
+    "area": "users",
+    "task": "List SCIM2 users",
+    "expected_id": "users.getUser",
+    "queries": ["list scim2 users", "get scim2 user"]
+  },
+  {
+    "area": "users",
+    "task": "Create a new user via SCIM2",
+    "expected_id": "users.createUser",
+    "queries": ["create user", "create scim2 user"]
+  },
+  {
+    "area": "users",
+    "task": "Delete a SCIM2 user",
+    "expected_id": "users.deleteUser",
+    "queries": ["delete user", "delete scim2 user"]
+  },
+  {
+    "area": "groups",
+    "task": "List SCIM2 groups",
+    "expected_id": "groups.getGroup",
+    "queries": ["list groups", "get scim2 group"]
+  },
+  {
+    "area": "groups",
+    "task": "Create a SCIM2 group",
+    "expected_id": "groups.createGroup",
+    "queries": ["create group", "create scim2 group"]
+  },
+  {
+    "area": "roles",
+    "task": "List v2 roles",
+    "expected_id": "roles.getRoleV2",
+    "queries": ["list roles v2", "getRoleV2"]
+  },
+  {
+    "area": "roles",
+    "task": "Patch role members or permissions",
+    "expected_id": "roles.patchRole",
+    "queries": ["patch role", "update role permissions users groups"]
+  },
+  {
+    "area": "agents",
+    "task": "List SCIM2 agents",
+    "expected_id": "agents.getAgents",
+    "queries": ["list agents", "get scim2 agents"]
+  },
+  {
+    "area": "agents",
+    "task": "Create an AI agent identity",
+    "expected_id": "agents.createAgent",
+    "queries": ["create agent", "new scim2 agent"]
+  },
+  {
+    "area": "user_lifecycle",
+    "task": "Get active sessions for a user",
+    "expected_id": "user_lifecycle.getSessionsByUserId",
+    "queries": ["get sessions by user id", "list user sessions"]
+  },
+  {
+    "area": "user_lifecycle",
+    "task": "Terminate all sessions for a user",
+    "expected_id": "user_lifecycle.terminateSessionsByUserId",
+    "queries": ["terminate user sessions", "terminate sessions by user"]
+  },
+  {
+    "area": "identity_providers",
+    "task": "List configured identity providers",
+    "expected_id": "identity_providers.getIDPs",
+    "queries": ["list identity providers", "get idps"]
+  },
+  {
+    "area": "identity_providers",
+    "task": "Create a new identity provider",
+    "expected_id": "identity_providers.addIDP",
+    "queries": ["add identity provider", "create idp"]
+  },
+  {
+    "area": "claims",
+    "task": "List local claims",
+    "expected_id": "claims.getLocalClaims",
+    "queries": ["list local claims", "get local claims"]
+  },
+  {
+    "area": "claims",
+    "task": "Create a new local claim",
+    "expected_id": "claims.addLocalClaim",
+    "queries": ["add local claim", "create local claim"]
+  },
+  {
+    "area": "user_stores",
+    "task": "List secondary user stores",
+    "expected_id": "user_stores.getSecondaryUserStores",
+    "queries": ["list secondary user stores", "get secondary user stores"]
+  },
+  {
+    "area": "governance_security",
+    "task": "Get allowed CORS origins",
+    "expected_id": "governance_security.getCORSOrigins",
+    "queries": ["cors origins", "get cors origins"]
+  },
+  {
+    "area": "governance_security",
+    "task": "List keystore certificate aliases",
+    "expected_id": "governance_security.getCertificateAliases",
+    "queries": ["certificate aliases", "list keystore certificates"]
+  },
+  {
+    "area": "branding_notifications",
+    "task": "List email template types",
+    "expected_id": "branding_notifications.getAllEmailTemplateTypes",
+    "queries": ["email template types", "list email templates"]
+  },
+  {
+    "area": "extensions",
+    "task": "List configured webhooks",
+    "expected_id": "extensions.getWebhooks",
+    "queries": ["list webhooks", "get webhooks"]
+  },
+  {
+    "area": "extensions",
+    "task": "Create a new action extension",
+    "expected_id": "extensions.createAction",
+    "queries": ["create action", "add action extension"]
+  },
+  {
+    "area": "organizations",
+    "task": "List sub-organizations",
+    "expected_id": "organizations.organizationsGet",
+    "queries": ["list organizations", "organizations get"]
+  },
+  {
+    "area": "workflows_approvals",
+    "task": "List configured workflows",
+    "expected_id": "workflows_approvals.getWorkflows",
+    "queries": ["list workflows", "get workflows"]
+  },
+  {
+    "area": "tenants",
+    "task": "List tenants",
+    "expected_id": "tenants.retrieveTenants",
+    "queries": ["retrieve tenants", "list tenants"]
+  }
+]

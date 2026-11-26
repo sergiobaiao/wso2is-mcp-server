@@ -2,7 +2,7 @@
 
 # Variables
 PROJECT_ROOT := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-BINARY_NAME := asgardeo-mcp
+BINARY_NAME := wso2is-mcp
 GO := go
 GOFMT := gofmt
 GOVET := go vet
@@ -28,8 +28,8 @@ all: lint test build-linux build-linux-arm build-darwin
 
 build: clean test build-linux build-linux-arm build-darwin
 
-# Servers to build: asgardeo-mcp, self-service-mcp, or both (default)
-SERVER ?= asgardeo-mcp self-service-mcp
+# Servers to build: wso2is-mcp, self-service-mcp, or both (default)
+SERVER ?= wso2is-mcp self-service-mcp
 LDFLAGS := -ldflags "-X main.version=$(BUILD_VERSION)"
 
 build-linux:
@@ -76,11 +76,16 @@ vet:
 	@echo "Running go vet..."
 	@$(GOVET) ./...
 
+# Run golangci-lint
+lint:
+	@echo "Running golangci-lint..."
+	@$(GOLINT) run
+
 # Show help
 help:
 	@echo "Available targets:"
 	@echo "  all        : Run lint, test, and build"
-	@echo "  build      : Build the servers (SERVER=asgardeo-mcp or SERVER=self-service-mcp to build one)"
+	@echo "  build      : Build the servers (SERVER=wso2is-mcp or SERVER=self-service-mcp to build one)"
 	@echo "  clean      : Clean build artifacts"
 	@echo "  test       : Run tests"
 	@echo "  coverage   : Run tests with coverage report"

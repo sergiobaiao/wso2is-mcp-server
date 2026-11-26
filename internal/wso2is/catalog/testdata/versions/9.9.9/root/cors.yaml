@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  title: CORS Management
+  version: 9.9.9
+servers:
+  - url: https://{serverUrl}/t/{tenantDomain}/api/server/v1
+paths:
+  /cors/origins:
+    get:
+      operationId: listAllowedCORSOrigins
+      summary: List allowed CORS origins
+      description: |
+        <b>Scope required:</b>
+        * internal_cors_view
+      responses:
+        '200':
+          description: OK

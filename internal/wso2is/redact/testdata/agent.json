@@ -1,0 +1,8 @@
+{
+  "id": "agent-id-1",
+  "displayName": "billing-agent",
+  "credentials": {
+    "clientSecret": "agent-secret-666",
+    "access_token": "agent-token-777"
+  }
+}

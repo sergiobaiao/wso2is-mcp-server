@@ -1,0 +1,394 @@
+[
+  {
+    "name": "authorize_api",
+    "description": "Authorize API to an application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "appId",
+        "id",
+        "policyIdentifier",
+        "scopes"
+      ],
+      "properties": {
+        "appId": "string",
+        "id": "string",
+        "policyIdentifier": "string",
+        "scopes": "array"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_api_resource",
+    "description": "Create an API Resource in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "identifier",
+        "name",
+        "requiresAuthorization",
+        "scopes"
+      ],
+      "properties": {
+        "identifier": "string",
+        "name": "string",
+        "requiresAuthorization": "boolean",
+        "scopes": "array"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_m2m_app",
+    "description": "Create a new M2M Application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_name"
+      ],
+      "properties": {
+        "application_name": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_mobile_app",
+    "description": "Create a new Mobile Application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_name",
+        "redirect_url"
+      ],
+      "properties": {
+        "application_name": "string",
+        "redirect_url": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_single_page_app",
+    "description": "Create a new Single Page Application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_name",
+        "redirect_url"
+      ],
+      "properties": {
+        "application_name": "string",
+        "redirect_url": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_user",
+    "description": "Create a user in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "email",
+        "first_name",
+        "last_name",
+        "password",
+        "username"
+      ],
+      "properties": {
+        "email": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "password": "string",
+        "username": "string",
+        "userstore_domain": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "create_webapp_with_ssr",
+    "description": "Create a new regular web application that implements server side rendring in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_name",
+        "redirect_url"
+      ],
+      "properties": {
+        "application_name": "string",
+        "redirect_url": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_api_resource_by_identifier",
+    "description": "Get API Resource by identifier registered in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "identifier"
+      ],
+      "properties": {
+        "identifier": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_application_by_client_id",
+    "description": "Get details of an application by client ID in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "client_id"
+      ],
+      "properties": {
+        "client_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_application_by_name",
+    "description": "Get details of an application by name in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_name"
+      ],
+      "properties": {
+        "application_name": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_api_resources",
+    "description": "List API Resources registered in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "after": "string",
+        "before": "string",
+        "filter": "string",
+        "limit": "number"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_applications",
+    "description": "List all applications in Asgardeo",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_authorized_api",
+    "description": "List authorized API resources of an application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "app_id"
+      ],
+      "properties": {
+        "app_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_claims",
+    "description": "List all claims in Asgardeo",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "search_api_resources_by_name",
+    "description": "Search API Resources by name registered in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_application_basic_info",
+    "description": "Update basic information of an application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "access_url": "string",
+        "description": "string",
+        "id": "string",
+        "image_url": "string",
+        "logout_return_url": "string",
+        "name": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_application_claim_config",
+    "description": "Update claim configurations of an application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "claims",
+        "id"
+      ],
+      "properties": {
+        "claims": "array",
+        "id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_application_oauth_config",
+    "description": "Update OAuth/OIDC configurations of an application in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "access_token_attributes": "array",
+        "allowed_origins": "array",
+        "application_access_token_expiry_time": "number",
+        "id": "string",
+        "redirect_urls": "array",
+        "refresh_token_expiry_time": "number",
+        "revoke_tokens_when_idp_session_terminated": "boolean",
+        "user_access_token_expiry_time": "number"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_login_flow",
+    "description": "Update login flow in an application for given user prompt in Asgardeo",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "app_id",
+        "user_prompt"
+      ],
+      "properties": {
+        "app_id": "string",
+        "user_prompt": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  }
+]

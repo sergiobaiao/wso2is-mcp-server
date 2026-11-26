@@ -1,0 +1,6 @@
+{
+  "id": "wh-1",
+  "name": "user-events",
+  "endpoint": "https://hooks.example.com/is",
+  "secret": "whsec_top_secret_signing_key"
+}

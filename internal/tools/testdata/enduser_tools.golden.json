@@ -1,0 +1,473 @@
+[
+  {
+    "name": "delete_backup_codes",
+    "description": "Deletes the user's remaining backup codes; they stop working. Warn the user if they are their last second factor. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_app_consent",
+    "description": "Gets what an app consent covers: the app, purposes, data categories, third-party sharing, policy URL and when consent was given.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "consent_id"
+      ],
+      "properties": {
+        "consent_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_consent",
+    "description": "Gets one policy or communication preference consent: its name, policy link and subscribed channels.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "consent_id"
+      ],
+      "properties": {
+        "consent_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_my_application",
+    "description": "Gets one application the signed-in user can access.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_id"
+      ],
+      "properties": {
+        "application_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_profile",
+    "description": "Gets the signed-in user's profile: name, emails, mobile numbers, addresses and other attributes. An email or mobile number not in verifiedEmailAddresses / verifiedMobileNumbers is unverified.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "attributes": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_security_overview",
+    "description": "Summarises the signed-in user's sign-in security: authenticator app on/off, enabled MFA options, remaining backup codes, passkeys and push devices.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_authorized_apps",
+    "description": "Lists the apps the signed-in user has authorized to access their account, with the approved scopes. The app marked currentApp is the one this assistant uses.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_consents",
+    "description": "Lists the signed-in user's consents grouped as apps (data shared with an app), policies (accepted terms and privacy policies) and communicationPreferences (subscribed purposes). Timestamps are epoch milliseconds.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "state": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_linked_accounts",
+    "description": "Lists the signed-in user's linked local accounts and linked social / enterprise logins.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_my_applications",
+    "description": "Lists the applications the signed-in user can access, with their access URLs.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filter": "string",
+        "limit": "number",
+        "offset": "number"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_profile_attributes",
+    "description": "Lists the attributes in the user's profile: their names, display names, and whether they are editable or required. Emails and mobile numbers are changed with update_email and update_mobile; everything else with update_profile.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_sessions",
+    "description": "Lists where the signed-in user is signed in: browser and OS (userAgent), IP, login and last access time (epoch milliseconds) and the apps used in each session.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "remove_authenticator_app",
+    "description": "Removes the user's authenticator app (TOTP); codes from the app stop working. Warn the user if it is their last second factor. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "remove_passkey",
+    "description": "Removes a passkey or security key; it can no longer be used to sign in. Warn the user if it is their last second factor. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "credential_id"
+      ],
+      "properties": {
+        "credential_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "remove_push_device",
+    "description": "Removes a device that receives push sign-in approvals. Warn the user if it is their last second factor. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "device_id"
+      ],
+      "properties": {
+        "device_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "rename_passkey",
+    "description": "Renames a passkey or security key. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "credential_id",
+        "display_name"
+      ],
+      "properties": {
+        "credential_id": "string",
+        "display_name": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "revoke_app_access",
+    "description": "Revokes an app's access to the user's account; the app's tokens stop working and it must ask for permission again. Data the app already collected is governed by the app's own policy. If it is the app this assistant uses, the assistant loses access and the user has to sign in again. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "application_id"
+      ],
+      "properties": {
+        "application_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "revoke_consent",
+    "description": "Withdraws acceptance of a policy (the user may be asked to accept it again at next sign-in), or unsubscribes from a communication preference (stops every channel of that purpose; name the channels when confirming). Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "consent_id"
+      ],
+      "properties": {
+        "consent_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "terminate_all_sessions",
+    "description": "Signs the user out of every session on every device, possibly including the current one. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "terminate_session",
+    "description": "Signs the user out of one session, identified by its id from list_sessions. If it is the session this assistant uses, the assistant loses access and the user has to sign in again. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "session_id"
+      ],
+      "properties": {
+        "session_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "unlink_all_local_accounts",
+    "description": "Unlinks every linked local account. List each account that will be unlinked when confirming. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "unlink_all_social_accounts",
+    "description": "Unlinks every social / enterprise login. List each login that will be unlinked when confirming. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "unlink_local_account",
+    "description": "Unlinks one linked local account. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "user_id"
+      ],
+      "properties": {
+        "user_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "unlink_social_account",
+    "description": "Unlinks one social / enterprise login. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_email",
+    "description": "Adds a email address to the signed-in user's account, removes one, or makes one the primary email address. The primary email address can't be removed; make another one primary first. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "action",
+        "email"
+      ],
+      "properties": {
+        "action": "string",
+        "email": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_mobile",
+    "description": "Adds a mobile number to the signed-in user's account, removes one, or makes one the primary mobile number. The primary mobile number can't be removed; make another one primary first. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "action",
+        "mobile"
+      ],
+      "properties": {
+        "action": "string",
+        "mobile": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "update_profile",
+    "description": "Updates attributes in the signed-in user's profile. Use the attribute names exactly as list_profile_attributes returns them, with the new value: text, true/false, or a list for a multiValued attribute. An empty value clears the attribute. Example: {\"name.givenName\":\"Anne\",\"country\":\"Sri Lanka\"}. Use update_email and update_mobile for emails and mobile numbers. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "attributes"
+      ],
+      "properties": {
+        "attributes": "object"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "withdraw_app_consent",
+    "description": "Withdraws the user's consent to share data with an app. The app may ask again or stop working for the user. Before calling, describe the exact change and its target to the user and get their explicit yes to it. The user's request is not a yes, and a yes to an earlier or different change doesn't carry over.",
+    "inputSchema": {
+      "type": "object",
+      "required": [
+        "consent_id"
+      ],
+      "properties": {
+        "consent_id": "string"
+      }
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  }
+]

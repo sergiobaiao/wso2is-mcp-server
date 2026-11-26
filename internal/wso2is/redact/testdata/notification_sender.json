@@ -1,0 +1,8 @@
+{
+  "name": "EmailPublisher",
+  "properties": [
+    {"key": "smtpHost", "value": "smtp.example.com"},
+    {"key": "smtpPassword", "value": "smtp-pass-secret-111"},
+    {"key": "authToken", "value": "twilio-auth-token-222"}
+  ]
+}

@@ -17,8 +17,8 @@ Server (IS) 7.3**:
 The target is full coverage of the IS 7.3 REST APIs: 116 OpenAPI files and 921 operations,
 including SCIM 2.0. The work has no dependency on the WSO2 AI Gateway.
 
-**Status**: the design is complete and implementation has not started. All work is driven by
-Spec Kit.
+**Status**: implementation is in progress. `specs/001-wso2is-full-coverage/tasks.md` is the
+progress record: tasks marked `[X]` are done. All work is driven by Spec Kit.
 
 ## 2. Sources of truth and precedence
 
@@ -67,6 +67,10 @@ Rules:
 - **Do not start implementation while analyze reports CRITICAL issues.**
 - **Mark each task `[X]`** in `tasks.md` when it is done. A task is done only when its tests and
   `go build ./...`, `go vet ./...` and `go test -race ./...` pass.
+- **Document every change.** A code change is not done until the related markdown files
+  (`docs/`, `README.md`, this file) and the Spec Kit artifacts (`tasks.md`, and `plan.md`,
+  `research.md`, `data-model.md`, `contracts/` or `quickstart.md` when behavior, configuration
+  or a decision changes) describe it. Update them in the same commit.
 - **Commit** after each task or logical group, with the task id in the message
   (`T048: add catalog tools`). Never commit secrets or IS credentials.
 - After the last task, run converge until it reports `Converged`.
@@ -117,6 +121,12 @@ make lint                                        # golangci-lint (target added b
 make build-linux SERVER=self-service-mcp BUILD_VERSION=1.2.3
 ```
 
+- `-race` needs cgo and a C compiler. On Windows without one, run `go test ./...` locally and
+  rely on CI (`.github/workflows/ci.yml`, Linux) for the `-race` gate; say so when reporting.
+- Integration tests skip unless their environment is set: the tool-level tests
+  (`catalog_test.go`, `scim_test.go`) need `SERVER_URL`, `CLIENT_ID`, `CLIENT_SECRET` and
+  `CERT_PATH`; the spike tests need `IS_URL`, `IS_CLIENT_ID`, `IS_CLIENT_SECRET` and `CERT_PATH`.
+
 - A local IS for integration tests: `docker run -d -p 9443:9443 wso2/wso2is:7.3.0`. The setup is
   in `specs/001-wso2is-full-coverage/quickstart.md`.
 - Releases: `.github/workflows/release.yml` (manual dispatch) runs `.github/scripts/release.sh`.
@@ -125,17 +135,21 @@ make build-linux SERVER=self-service-mcp BUILD_VERSION=1.2.3
 
 ## 6. Architecture
 
-### Current code (before implementation)
+### Current code (implementation in progress)
 
-- `cmd/asgardeo-mcp`: 19 admin tools registered by hand with `s.AddTool`, over stdio. Each
-  `internal/tools/*.go` constructor takes a singleton SDK client from `internal/asgardeo`.
-- `cmd/self-service-mcp`: 28 end-user tools, over stdio or stateless Streamable HTTP. The bearer
-  token from each request is put in the context (`internal/selfservice`). Tools are built with
-  `newTool` in `internal/tools/enduser/enduser.go`, which handles annotations, the confirmation
-  sentence and `redact()`.
-- Both use `github.com/asgardeo/go` v0.0.18. Its client credentials request `scope=SYSTEM`.
-- Configuration is in `internal/config` (`BASE_URL`, `CLIENT_ID`, `CLIENT_SECRET`, `CERT_PATH`,
-  `PRODUCT_MODE` and `ASGARDEO_*` fallbacks).
+- `cmd/wso2is-mcp` builds one `toolkit.Registry` from the catalog (`internal/wso2is/catalog`),
+  the IS client (`internal/wso2is/client`) and config, and registers three groups: catalog tools
+  (`internal/tools/catalog`), curated SCIM tools (`internal/tools/scim`) and curated admin
+  tools (`internal/tools/admin`, one package per area, listed in `internal/tools/admin/register.go`).
+  It no longer uses the Asgardeo SDK.
+- Curated tools resolve their operations with `toolkit.LookupPair` (root and `.org.` variant),
+  call IS with `toolkit.Call` / `toolkit.CallDeclared`, and read inputs with the `toolkit`
+  argument helpers. The toolkit adds annotations, the confirmation sentence, elicitation,
+  `organization_id`, redaction and truncation.
+- `cmd/self-service-mcp`: 28 end-user tools on the legacy `newTool` framework in
+  `internal/tools/enduser` and `internal/selfservice`, until US7 (T096–T101) migrates them.
+- Configuration is in `internal/config` (`contracts/configuration.md`, with the legacy
+  `BASE_URL` and `ASGARDEO_*` fallbacks).
 
 ### Target (plan.md, Project Structure)
 
@@ -179,3 +193,54 @@ Key facts that are easy to get wrong:
 - Write approval uses MCP elicitation when the client supports it, with annotations and
   descriptions as the fallback.
 - All artifacts are in English.
+
+## 8. Mistakes earlier agents made (do not repeat)
+
+Found while reviewing work an agent (Antigravity) left on 2026-11-25. Each item is a rule and
+the check that catches it. Read this section before the first task of a session.
+
+1. **Leaving work uncommitted.** Phases 1 and 2 and most of US1, US2, US4 and US8 were left as
+   untracked files, with nothing committed. Commit after each task or logical group (section 3).
+   Check: `git status --short` is empty, or holds only the current task, before you stop.
+2. **A tree that does not compile.** Seven `internal/tools/admin/<area>` packages had only
+   `_test.go` files, so `go vet ./...` and `go test ./...` failed for the whole module.
+   Test-first means a failing test, not a module that does not build. Write the implementation
+   in the same session, or do not leave the test files. Check: `go build ./... && go vet ./...`
+   passes before you stop.
+3. **Marking tasks `[X]` that were not done.** `cmd/wso2is-mcp/main.go` (T040) contained dead
+   placeholder code (`add := func(...) { _ = fn }`, `type mcpTool any`) and registered none of
+   the new tools. T051 was marked done while the file it replaces (`internal/tools/users.go`)
+   was still in use. A task is done only when its code is reachable from the binary, the files
+   it replaces are deleted, and the section 3 checks pass. Never commit placeholder code.
+4. **Disabling TLS verification.** `test/integration/spike_test.go` set
+   `InsecureSkipVerify: true`. This breaks the constitution (Principle III) even in tests.
+   Trust the IS CA through `CERT_PATH`. Check: `grep -rn InsecureSkipVerify --include=*.go .`
+   prints nothing.
+5. **A golden file that can be regenerated.** The admin compatibility test had an `-update`
+   flag that would overwrite `internal/tools/testdata/admin_tools.golden.json`. It also asserted
+   an exact count of 19 tools, which every new tool would break. The T001/T002 goldens record
+   the tools as they were before any change. They are a compatibility floor (no lost input, no
+   new required input) and are never regenerated.
+6. **Tests shaped to a simpler implementation.** The `update_login_flow` test faked only the
+   generate, status and result routes. That pushes the code to drop the context (authenticators,
+   identity providers, claims) that the original tool sent. Fake every IS call that the real
+   behavior makes; never weaken behavior to fit a test.
+7. **Code not formatted.** `internal/wso2is/catalog/areas.go`, `extra.go` and two admin tests
+   failed `gofmt -s -l`, which CI rejects. Run `make fmt` (or `gofmt -w -s`) before committing.
+   Note that a file with CRLF line endings is not a gofmt issue; git normalizes it.
+8. **Docs left behind the code.** AGENTS.md still said "implementation has not started", and
+   `quickstart.md` named integration variables (`IS_ADMIN_USER`, `IS_ADMIN_PASSWORD`) that no
+   test reads. Update the related markdown and Spec Kit artifacts in the same commit (section 3).
+9. **Generated files not ignored.** `.specify/scripts/python/__pycache__/` was left untracked.
+   Add generated output to `.gitignore` instead of leaving it in `git status`.
+
+10. **A CI gate that never ran.** `.github/workflows/ci.yml` pinned golangci-lint v2.1.6,
+    built with go1.24, which cannot load a module that targets go 1.25.5. The lint step failed on
+    config load, so the race tests after it never ran and 28 real lint issues went unseen. Pin a
+    linter release built with at least the `go.mod` Go version, and run `make lint` (or
+    `golangci-lint run ./...`) locally before marking T009/T010-style tasks done. Each `//nolint`
+    needs the rule id and a reason.
+
+Also check these before trusting a vendored spec: some request body schemas reject every
+valid body (research.md R2). Confirm a validation error against the spec before changing the
+request.
